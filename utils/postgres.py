@@ -3,6 +3,7 @@ from logging import Logger
 
 import asyncpg
 
+
 class PostgresConnection:
     def __init__(self, logger: Logger):
         self.logger = logger
@@ -22,15 +23,16 @@ class PostgresConnection:
             user=pg_user,
         ) as pool:
             result = await self.execute_sql(
-                f"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{pg_dbname}'",
-                pool=pool
+                f"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{pg_dbname}'", pool=pool
             )
             if result is None:
                 # Database doesn't exist, so create it
                 database_existed = False
-                self.logger.warn(f"The configured postgres database ({pg_dbname}) doesn't exist. Proceeding to create it and add tables...")
+                self.logger.warn(
+                    f"The configured postgres database ({pg_dbname}) doesn't exist. Proceeding to create it and add tables..."
+                )
                 await self.execute_sql(f"CREATE DATABASE {pg_dbname}", pool=pool, use_transaction=False)
-    
+
         self.pool = await asyncpg.create_pool(
             database=pg_dbname,
             host=pg_host,
@@ -40,8 +42,26 @@ class PostgresConnection:
 
         if not database_existed:
             # NB: Using BIGINT for discord ids will work upto 2084-09-06T15:47:35.551Z
-            await self.execute_sql("CREATE TABLE messages ( id BIGINT PRIMARY KEY, author_id BIGINT NOT NULL, content TEXT, attachment_b64 TEXT, ts TIMESTAMPTZ )")
-            await self.execute_sql("CREATE TABLE guilds ( id BIGINT PRIMARY KEY, owner_id BIGINT NOT NULL, ignored_channels BIGINT[], disabled_events TEXT[], event_logs JSON, log_bots BOOL, custom_settings JSON )")
+            await self.execute_sql(
+                "CREATE TABLE messages ( "
+                "id BIGINT PRIMARY KEY, "
+                "author_id BIGINT NOT NULL, "
+                "content TEXT, "
+                "attachment_b64 TEXT, "
+                "ts TIMESTAMPTZ "
+                ")"
+            )
+            await self.execute_sql(
+                "CREATE TABLE guilds ( "
+                "id BIGINT PRIMARY KEY, "
+                "owner_id BIGINT NOT NULL, "
+                "ignored_channels BIGINT[], "
+                "disabled_events TEXT[], "
+                "event_logs JSON, "
+                "log_bots BOOL, "
+                "custom_settings JSON "
+                ")"
+            )
             self.logger.info(f"Successfully created and added tables to the {pg_dbname} database.")
 
     async def _execute_sql_select(self, query: str, *params, index: int, return_all: bool, pool: asyncpg.Pool):
@@ -54,7 +74,7 @@ class PostgresConnection:
                 if index is None:
                     return query_result
                 return [record[index] for record in query_result]
-                
+
             if index is None:
                 return await connection.fetchrow(query, *params)
             return await connection.fetchval(query, *params, column=index)
@@ -72,7 +92,15 @@ class PostgresConnection:
             else:
                 return await connection.execute(query, *params)
 
-    async def execute_sql(self, query: str, *params, index: int | None=None, return_all=False, pool: asyncpg.Pool | None = None, use_transaction: bool = True):
+    async def execute_sql(
+        self,
+        query: str,
+        *params,
+        index: int | None = None,
+        return_all=False,
+        pool: asyncpg.Pool | None = None,
+        use_transaction: bool = True,
+    ):
         pool = pool or self.pool
 
         if query.upper().startswith("SELECT"):

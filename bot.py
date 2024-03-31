@@ -15,6 +15,7 @@ from utils.postgres import create_postgres_connection
 
 class MyBot(commands.Bot):
     """Custom class for bot."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs, command_prefix=self.get_prefix)
 
