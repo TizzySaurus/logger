@@ -1,6 +1,7 @@
 import logging
 import logging.config
 import os
+import pathlib
 
 import discord
 import yaml
@@ -25,16 +26,27 @@ class MyBot(commands.Bot):
         logging.getLogger("discord").setLevel(logging.WARNING)
         logging.getLogger("websockets").setLevel(logging.WARNING)
 
+    async def setup_hook(self):
+        for extension in [file for file in pathlib.Path('cogs').glob('*.py')]:
+            if extension.name == "__init__.py":
+                continue
+
+            try:
+                await bot.load_extension(f"cogs.{extension.stem}")
+                bot.logger.debug(f"Successfully loaded extension {extension.name!r}")
+            except Exception as e:
+                bot.logger.exception(f"Failed to load extension {extension.name!r}:\n{e}\n")
+
     async def get_prefix(self, message: discord.Message):
         return "!" if message.author.id == self.owner_id else None
-    
+
 
 if __name__ == "__main__":
     intents = discord.Intents.default()
     intents.members = True
     intents.message_content = True
 
-    bot = MyBot(case_insensitive=True, intents=intents, owner_id=442244135840382978)
-
     load_dotenv()
+
+    bot = MyBot(case_insensitive=True, intents=intents, owner_id=442244135840382978)
     bot.run(os.getenv("BOT_TOKEN"))
