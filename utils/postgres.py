@@ -64,7 +64,10 @@ class PostgresConnection:
             connection: asyncpg.Connection
 
             if use_transaction:
+                is_many = len(params) > 0 and isinstance(params[0], (list, tuple))
                 async with connection.transaction():
+                    if is_many:
+                        return await connection.executemany(query, *params)
                     return await connection.execute(query, *params)
             else:
                 return await connection.execute(query, *params)
