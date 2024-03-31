@@ -1,0 +1,43 @@
+version: 1
+propagate: false
+formatters:
+    error_formatter:
+        format: '{asctime} - {name} - {levelname} - line {lineno} - {message}'
+        style: '{'
+        datefmt: '%d/%m/%y - %H:%M:%S'
+    debug_formatter:
+        format: '{asctime} - {name} - {levelname} - {message}'
+        style: '{'
+        datefmt: '%d/%m/%y - %H:%M:%S'
+filters:
+    error_filter:
+        (): 'filters.ErrorFilter'
+    warning_filter:
+        (): 'filters.WarningFilter'
+    debug_filter:
+        (): 'filters.DebugOrInfoFilter'
+handlers:
+    console_handler:
+        class: logging.StreamHandler
+        formatter: debug_formatter
+    error_handler:
+        class: logging.FileHandler
+        filename: './logs/errors.log'
+        filters: [error_filter]
+        formatter: error_formatter
+        level: ERROR
+    warning_handler:
+        class: logging.FileHandler
+        filename: './logs/warnings.log'
+        filters: [warning_filter]
+        formatter: error_formatter
+        level: WARNING
+    debug_handler:
+        class: logging.FileHandler
+        filename: './logs/debugs.log'
+        filters: [debug_filter]
+        formatter: debug_formatter
+        level: DEBUG
+root:
+    level: DEBUG
+    handlers: [console_handler, error_handler, warning_handler, debug_handler]
