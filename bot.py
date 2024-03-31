@@ -8,6 +8,8 @@ import yaml
 from dotenv import load_dotenv
 from discord.ext import commands
 
+from utils.postgres import create_postgres_connection
+
 
 class MyBot(commands.Bot):
     """Custom class for bot."""
@@ -27,6 +29,10 @@ class MyBot(commands.Bot):
         logging.getLogger("websockets").setLevel(logging.WARNING)
 
     async def setup_hook(self):
+        await self.initialise_postgres()
+        await self.load_extensions()
+
+    async def load_extensions(self):
         for extension in [file for file in pathlib.Path('cogs').glob('*.py')]:
             if extension.name == "__init__.py":
                 continue
@@ -36,6 +42,9 @@ class MyBot(commands.Bot):
                 bot.logger.debug(f"Successfully loaded extension {extension.name!r}")
             except Exception as e:
                 bot.logger.exception(f"Failed to load extension {extension.name!r}:\n{e}\n")
+
+    async def initialise_postgres(self):
+        self.db = await create_postgres_connection(self.logger)
 
     async def get_prefix(self, message: discord.Message):
         return "!" if message.author.id == self.owner_id else None
