@@ -45,6 +45,8 @@ class MyBot(commands.Bot):
 
     async def load_extensions(self):
         cogs_dir = pathlib.Path("cogs")
+        extension_files: list[str] = []
+
         for python_file in [file for file in cogs_dir.rglob("*.py")]:
             if python_file.name == "__init__.py":
                 continue
@@ -53,11 +55,16 @@ class MyBot(commands.Bot):
             extension_file = ".".join(extension_parts)
             extension_file_name = extension_file[:-3]
 
+            extension = f"cogs.{extension_file_name}"
+            extension_files.append(extension)
+
             try:
-                await bot.load_extension(f"cogs.{extension_file_name}")
-                bot.logger.debug(f"Successfully loaded extension {extension_file_name!r}")
+                await bot.load_extension(extension)
+                bot.logger.debug(f"Successfully loaded extension {extension!r}")
             except Exception as e:
-                bot.logger.exception(f"Failed to load extension {extension_file_name!r}:\n{e}\n")
+                bot.logger.exception(f"Failed to load extension {extension!r}:\n{e}\n")
+
+        self._extension_files = extension_files
 
     async def initialise_postgres(self):
         self.db = await create_postgres_connection(self.logger)
