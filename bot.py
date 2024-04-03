@@ -2,14 +2,13 @@ import logging
 import logging.config
 import os
 import pathlib
-from datetime import datetime
 
 import discord
 import yaml
 from dotenv import load_dotenv
 from discord.ext import commands
 
-from utils.batcher import Batcher
+from utils.batchers import MessageBatcher
 from utils.postgres import create_postgres_connection
 
 
@@ -34,14 +33,9 @@ class MyBot(commands.Bot):
     async def setup_hook(self):
         await self.initialise_postgres()
 
-        self.message_batcher = Batcher[tuple[int, int, bytes, str, datetime]](
-            1_000, "MESSAGE_BATCH_SIZE", self.submit_message_batch
-        )
+        self.message_batcher = MessageBatcher(self.db)
 
         await self.load_extensions()
-
-    async def submit_message_batch(self, messages_components: list[tuple[int, int, bytes, str, datetime]]):
-        await self.db.execute_sql("INSERT INTO messages VALUES ($1, $2, $3, $4, $5)", messages_components)
 
     async def load_extensions(self):
         cogs_dir = pathlib.Path("cogs")
