@@ -40,20 +40,23 @@ class OwnerCommands(commands.Cog):
             await ctx.send(f":warning: The `{cog}` cog is already loaded. Perhaps you meant to unload/reload?")
             return
         await self.bot.load_extension(cog)
-        await ctx.send(f"{ctx.author.mention} Successfully loaded {cog}.")
+        await ctx.send(f"{ctx.author.mention} Successfully loaded `{cog}`.")
 
     @cogs.command(name="unload")
     async def unload_cog(self, ctx: commands.Context, cog: CogConverter):
         if cog not in self.bot.extensions:
-            await ctx.send(f":warning: The `{cog}` is already unloaded. Perhaps you meant to load?")
+            await ctx.send(f":warning: The `{cog}` cog is already unloaded. Perhaps you meant to load?")
             return
         await self.bot.unload_extension(cog)
-        await ctx.send(f"{ctx.author.mention} Successfully unloaded {cog}.")
+        await ctx.send(f"{ctx.author.mention} Successfully unloaded `{cog}`.")
 
     @cogs.command(name="reload")
     async def reload_cog(self, ctx: commands.Context, cog: CogConverter):
+        if cog not in self.bot.extensions:
+            await ctx.send(f":warning: The `{cog}` is unloaded, so cannot be reloaded. Perhaps you meant to load?")
+            return
         await self.bot.reload_extension(cog)
-        await ctx.send(f"{ctx.author.mention} Successfully reload {cog}.")
+        await ctx.send(f"{ctx.author.mention} Successfully reloaded `{cog}`.")
 
 
 async def setup(bot: MyBot):
