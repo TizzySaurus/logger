@@ -2,6 +2,7 @@ import logging
 import logging.config
 import os
 import pathlib
+import sys
 
 import discord
 import yaml
@@ -29,6 +30,11 @@ class MyBot(commands.Bot):
         # Set Logging Levels
         logging.getLogger("discord").setLevel(logging.WARNING)
         logging.getLogger("websockets").setLevel(logging.WARNING)
+
+    async def on_error(self, event_method: str, /, *args, **kwargs) -> None:
+        e_type, e, _ = sys.exc_info()
+        self.logger.exception(f"Received an unhandled {e_type.__name__} error: {e}.")
+        return await super().on_error(event_method, *args, **kwargs)
 
     async def setup_hook(self):
         await self.initialise_postgres()
