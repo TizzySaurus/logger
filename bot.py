@@ -31,6 +31,10 @@ class MyBot(commands.Bot):
         logging.getLogger("discord").setLevel(logging.WARNING)
         logging.getLogger("websockets").setLevel(logging.WARNING)
 
+    async def on_command_error(self, context: commands.Context, exception: commands.CommandError) -> None:
+        self.logger.exception(f"Recieved an unhandled {type(exception).__name__} error: {exception}.")
+        return await super().on_command_error(context, exception)
+
     async def on_error(self, event_method: str, /, *args, **kwargs) -> None:
         e_type, e, _ = sys.exc_info()
         self.logger.exception(f"Received an unhandled {e_type.__name__} error: {e}.")
