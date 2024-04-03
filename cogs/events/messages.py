@@ -14,7 +14,7 @@ class MessageEventsHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: Message):
         print(message)
-        if message.is_system or message.author.bot or not message.guild:
+        if message.is_system() or message.author.bot or not message.guild:
             # Ignore messages that are system, from bots, or in DMs
             return
 
