@@ -36,11 +36,17 @@ class OwnerCommands(commands.Cog):
 
     @cogs.command(name="load")
     async def load_cog(self, ctx: commands.Context, cog: CogConverter):
+        if cog in self.bot.extensions:
+            await ctx.send(f":warning: The `{cog}` cog is already loaded. Perhaps you meant to unload/reload?")
+            return
         await self.bot.load_extension(cog)
         await ctx.send(f"{ctx.author.mention} Successfully loaded {cog}.")
 
     @cogs.command(name="unload")
     async def unload_cog(self, ctx: commands.Context, cog: CogConverter):
+        if cog not in self.bot.extensions:
+            await ctx.send(f":warning: The `{cog}` is already unloaded. Perhaps you meant to load?")
+            return
         await self.bot.unload_extension(cog)
         await ctx.send(f"{ctx.author.mention} Successfully unloaded {cog}.")
 
