@@ -11,7 +11,6 @@ def decrypt(ciphertext: bytes, tag: bytes, nonce: bytes):
 
 
 def encrypt(plaintext: str | bytes) -> tuple[bytes, bytes, bytes]:
-    # return bytes(plaintext.encode())
     if not isinstance(plaintext, bytes):
         plaintext = bytes(plaintext.encode())
 
