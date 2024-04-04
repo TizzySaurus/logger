@@ -46,9 +46,13 @@ class PostgresConnection:
                 "CREATE TABLE messages ( "
                 "id BIGINT PRIMARY KEY, "
                 "author_id BIGINT NOT NULL, "
-                "content TEXT, "
-                "attachment_b64 TEXT, "
-                "ts TIMESTAMPTZ "
+                "encrypted_content BYTEA, "
+                "encrypted_content_tag BYTEA, "
+                "encrypted_content_nonce BYTEA, "
+                "encrypted_attachments_b64 BYTEA, "
+                "encrypted_attachments_tag BYTEA, "
+                "encrypted_attachments_nonce BYTEA, "
+                "created_at TIMESTAMPTZ "
                 ")"
             )
             await self.execute_sql(

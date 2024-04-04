@@ -53,16 +53,30 @@ class Batcher[T]:
 class BatchedMessage:
     id: int
     author_id: int
-    encrypted_content: str
-    encrypted_attachments: str
+    encrypted_content: bytes
+    encrypted_content_tag: bytes
+    encrypted_content_nonce: bytes
+    encrypted_attachments: bytes
+    encrypted_attachments_tag: bytes
+    encrypted_attachments_nonce: bytes
     created_at: datetime
 
     @classmethod
     def from_discord_message(cls, message: Message):
-        return cls(message.id, message.author.id, encrypt(message.content or "None").decode(), "", message.created_at)
+        return cls(message.id, message.author.id, *encrypt(message.content or ""), *encrypt(""), message.created_at)
 
     def to_tuple(self):
-        return (self.id, self.author_id, self.encrypted_content, self.encrypted_attachments, self.created_at)
+        return (
+            self.id,
+            self.author_id,
+            self.encrypted_content,
+            self.encrypted_content_tag,
+            self.encrypted_content_nonce,
+            self.encrypted_attachments,
+            self.encrypted_attachments_tag,
+            self.encrypted_attachments_nonce,
+            self.created_at,
+        )
 
     def __eq__(self, other: Any):
         if isinstance(other, Message):
@@ -80,5 +94,6 @@ class MessageBatcher(Batcher[BatchedMessage]):
 
     async def submit(self, messages_to_submit: list[BatchedMessage]):
         await self.db.execute_sql(
-            "INSERT INTO messages VALUES ($1, $2, $3, $4, $5)", (*map(lambda bm: bm.to_tuple(), messages_to_submit),)
+            "INSERT INTO messages VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+            (*map(lambda bm: bm.to_tuple(), messages_to_submit),),
         )

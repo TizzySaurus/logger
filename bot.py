@@ -9,8 +9,10 @@ import yaml
 from dotenv import load_dotenv
 from discord.ext import commands
 
-from utils.batchers import MessageBatcher
-from utils.postgres import create_postgres_connection
+# Note that we need to load environment variables BEFORE loading our custom modules
+load_dotenv()
+from utils.batchers import MessageBatcher  # noqa: E402
+from utils.postgres import create_postgres_connection  # noqa: E402
 
 
 class MyBot(commands.Bot):
@@ -77,8 +79,6 @@ if __name__ == "__main__":
     intents = discord.Intents.default()
     intents.members = True
     intents.message_content = True
-
-    load_dotenv()
 
     bot = MyBot(case_insensitive=True, intents=intents, owner_id=442244135840382978)
     bot.run(os.getenv("BOT_TOKEN"))
