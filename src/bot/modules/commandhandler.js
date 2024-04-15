@@ -6,7 +6,7 @@ module.exports = async message => {
   if (message.author.bot || !message.member || message.channel instanceof Eris.TextVoiceChannel) return
   if (message.content.startsWith(process.env.GLOBAL_BOT_PREFIX)) {
     const cmd = message.content.substring(process.env.GLOBAL_BOT_PREFIX.length).split(' ')[0].toLowerCase()
-    const splitSuffix = message.content.substr(process.env.GLOBAL_BOT_PREFIX).split(' ')
+    const splitSuffix = message.content.substring(process.env.GLOBAL_BOT_PREFIX).split(' ')
     const suffix = splitSuffix.slice(1, splitSuffix.length).join(' ')
     processCommand(message, cmd, suffix)
   }

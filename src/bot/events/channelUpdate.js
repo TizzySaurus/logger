@@ -1,14 +1,6 @@
 const send = require('../modules/webhooksender')
 const escape = require('markdown-escape')
-const { displayUser } = require('../utils/constants')
-const CHANNEL_TYPE_MAP = {
-  0: 'Text channel',
-  2: 'Voice channel',
-  4: 'Category channel',
-  5: 'Announcement channel',
-  13: 'Stage channel',
-  15: 'Forum channel'
-}
+const { displayUser, CHANNEL_TYPE_MAP } = require('../utils/constants')
 
 const canUseExternal = guild => {
   const logChannelID = global.bot.guildSettingsCache[guild.id].event_logs.channelUpdate
@@ -220,7 +212,7 @@ module.exports = {
 }
 
 function toTitleCase (str) {
-  return str.replace(/_/g, ' ').replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
+  return str.replace(/_/g, ' ').replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase() })
 }
 
 function getDifference (array1, array2) {

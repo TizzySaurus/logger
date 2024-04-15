@@ -133,3 +133,21 @@ exports.chunkify = (toChunk, maxCharacters = 1000) => {
  * @returns {string}
  */
 exports.displayUser = (user) => `${user.username}${user.discriminator !== "0" ? `#${user.discriminator}` : ""}`;
+
+// All channel types from: https://discord.com/developers/docs/resources/channel#channel-object-channel-types
+// Used for the channel* events. 
+exports.CHANNEL_TYPE_MAP = {
+  0: 'Text channel',
+  1: 'DM channel',
+  2: 'Voice channel',
+  3: 'Group DM channel',
+  4: 'Category channel',
+  5: 'Announcement channel',
+  10: 'Announcement thread channel',
+  11: 'Public Thread channel',
+  12: 'Private Thread channel',
+  13: 'Stage channel',
+  14: 'Directory channel',
+  15: 'Forum channel',
+  16: 'Media channel'
+}

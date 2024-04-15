@@ -16,8 +16,7 @@ module.exports = {
         author: {
           name: displayUser(message.author),
           icon_url: message.author.avatarURL
-        },
-        fields: []
+        }
       }]
     })
   },

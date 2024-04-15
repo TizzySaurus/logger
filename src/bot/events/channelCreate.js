@@ -1,13 +1,5 @@
 const send = require('../modules/webhooksender')
-const { displayUser } = require('../utils/constants')
-const CHANNEL_TYPE_MAP = {
-  0: 'Text channel',
-  2: 'Voice channel',
-  4: 'Category channel',
-  5: 'Announcement channel',
-  13: 'Stage channel',
-  15: 'Forum channel'
-}
+const { displayUser, CHANNEL_TYPE_MAP } = require('../utils/constants')
 
 module.exports = {
   name: 'channelCreate',
