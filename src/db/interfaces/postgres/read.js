@@ -20,12 +20,12 @@ async function getGuild(guildID) {
 
 async function getMessageById(messageID) {
   let message = await pool.query('SELECT * FROM messages WHERE id=$1', [messageID])
-  if (message.rows.length === 0) return null
-  message = await decryptMessageDoc(message.rows[0])
-  return message
+  if (!message.rows.length) return null
+  return decryptMessageDoc(message.rows[0])
 }
 
-async function decryptMessageDoc(message) {
+// Doesn't need to be async 
+function decryptMessageDoc(message) {
   message.content = aes.decrypt(message.content)
   if (message.attachment_b64) message.attachment_b64 = message.attachment_b64.split("|").map(encrypted_img_url => aes.decrypt(encrypted_img_url)).join("|")
   return message
@@ -33,11 +33,8 @@ async function decryptMessageDoc(message) {
 
 async function getMessagesByIds(messageIds) {
   const message = await pool.query('SELECT * FROM messages WHERE id = ANY ($1)', [messageIds])
-  if (message.rows.length === 0) return null
-  const decryptedMessages = []
-  message.rows.forEach(async row => {
-    decryptedMessages.push(await decryptMessageDoc(row))
-  })
+  if (!message.rows.length) return null
+  const decryptedMessages = message.rows.map((c) => decryptMessageDoc(c))
   return decryptedMessages
 }
 
