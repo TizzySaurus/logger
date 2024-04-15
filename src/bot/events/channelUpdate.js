@@ -1,4 +1,3 @@
-const { Permission } = require('eris')
 const send = require('../modules/webhooksender')
 const escape = require('markdown-escape')
 const CHANNEL_TYPE_MAP = {

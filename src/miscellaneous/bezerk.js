@@ -33,7 +33,7 @@ function start () {
           op: '1003', // IDENTIFY_SUPPLY
           c: {
             secret: secret,
-            shard: cluster.worker.rangeForShard
+            shard: global.cluster.worker.rangeForShard
           }
         })
       }
@@ -47,6 +47,7 @@ function start () {
         break
       }
       case '2001': { // REQUEST
+        // eslint-disable-next-line no-unused-vars
         const bot = global.bot
         try {
           if (msg.c.startsWith('recache')) {

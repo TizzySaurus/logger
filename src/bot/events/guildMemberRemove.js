@@ -1,5 +1,4 @@
 const send = require('../modules/webhooksender')
-const prunecache = require('../modules/prunecache')
 const { User } = require('eris')
 
 module.exports = {

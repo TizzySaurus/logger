@@ -23,7 +23,7 @@ module.exports = {
     let complete = false
     global.bot.on('messageCreate', async function temp (m) {
       if (i === 0) {
-        const timeout = setTimeout(() => {
+        setTimeout(() => {
           global.bot.removeListener('messageCreate', temp)
           if (!complete) {
             message.channel.createMessage({

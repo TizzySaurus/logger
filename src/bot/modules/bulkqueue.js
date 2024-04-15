@@ -71,9 +71,9 @@ function getEmbedCharLens (embeds) {
 function sendBulkLog (senderPkg, embeds, guildSettings) {
   global.bot.executeWebhook(senderPkg.webhookID, senderPkg.webhookToken, {
     file: senderPkg.file ? senderPkg.file : '',
-    username: global.bot.user.username,
-    avatarURL: global.bot.user.avatarURL,
-    embeds: embeds,
+    username: senderPkg.username || global.bot.user.username,
+    avatarURL: senderPkg.avatarURL || global.bot.user.avatarURL,
+    embeds,
     allowedMentions: { // even though this is an embed and cannot ping, why not
       everyone: false,
       roles: false,

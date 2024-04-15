@@ -21,7 +21,7 @@ module.exports = {
           name: 'Unknown User',
           icon_url: 'https://logger.bot/staticfiles/red-x.png'
         },
-        description: `${CHANNEL_TYPE_MAP[newChannel.type] ? CHANNEL_TYPE_MAP[newChannel.type] : 'Unsupported channel type'} created <#${newChannel.id}>`,
+        description: `${CHANNEL_TYPE_MAP[newChannel.type] || 'Unsupported channel type'} created <#${newChannel.id}>`,
         fields: [{
           name: 'Name',
           value: newChannel.name

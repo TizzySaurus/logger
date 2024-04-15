@@ -4,7 +4,7 @@ const { setEventsLogId } = require('../../db/interfaces/postgres/update')
 const { EMBED_COLORS, PRESET_EVENT_MAP, ALL_EVENTS } = require('../utils/constants')
 const { getEmbedFooter, getAuthorField } = require('../utils/embeds')
 
-async function returnMissingPerms (channelID, userID, events) {
+async function returnMissingPerms (channelID, userID) {
   const requiredPerms = ['manageWebhooks', 'viewAuditLog', 'viewChannel', 'sendMessages', 'embedLinks', 'readMessageHistory', 'useExternalEmojis']
   let logChannelPerms
   try {

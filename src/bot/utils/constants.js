@@ -89,3 +89,44 @@ exports.PRESET_EVENT_MAP = {
   channel: ['channelCreate', 'channelUpdate', 'channelDelete'],
   all: this.ALL_EVENTS
 }
+
+// Define the events once in this file vs in multiple files.
+exports.eventLogs = {
+  channelCreate: '',
+  channelUpdate: '',
+  channelDelete: '',
+  guildBanAdd: '',
+  guildBanRemove: '',
+  guildRoleCreate: '',
+  guildRoleDelete: '',
+  guildRoleUpdate: '',
+  guildUpdate: '',
+  messageDelete: '',
+  messageDeleteBulk: '',
+  messageUpdate: '',
+  guildMemberAdd: '',
+  guildMemberKick: '',
+  guildMemberRemove: '',
+  guildMemberUpdate: '',
+  guildMemberVerify: '',
+  voiceChannelLeave: '',
+  voiceChannelJoin: '',
+  voiceStateUpdate: '',
+  voiceChannelSwitch: '',
+  guildEmojisUpdate: '',
+  guildMemberNickUpdate: '',
+  guildMemberBoostUpdate: ''
+}
+
+
+function chunkify(toChunk) {
+  const lenChunks = Math.ceil(toChunk.length / 1000)
+  const chunksToReturn = []
+  for (let i = 0; i < lenChunks; i++) {
+    const chunkedStr = toChunk.substring((1000 * i), i === 0 ? 1000 : 1000 * (i + 1))
+    chunksToReturn.push(chunkedStr)
+  }
+  return chunksToReturn
+}
+
+exports.chunkify = chunkify;

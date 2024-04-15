@@ -25,7 +25,7 @@ const explicitContentLevels = {
 module.exports = {
   name: 'guildUpdate',
   type: 'on',
-  handle: async (newGuild, oldGuild) => {
+  handle: async (newGuild) => {
     const fields = []
     newGuild.getAuditLogs({ actionType: 1, limit: 1 }).then((log) => {
       if (!log || !log.entries || log.entries.length === 0 || new Date().getTime() - new Date((log.entries[0].id / 4194304) + 1420070400000).getTime() > 3000) return // this could be null coalesced but why not make it backwards compatible
@@ -99,7 +99,9 @@ module.exports = {
             value: `► Now: **${after}**\n► Was: **${before}**`
           }
         case 'afk_channel_id':
+          // eslint-disable-next-line no-case-declarations
           const beforeChannel = logEntry.before && newGuild.channels.get(logEntry.before.afk_channel_id)
+          // eslint-disable-next-line no-case-declarations
           const afterChannel = logEntry.after && newGuild.channels.get(logEntry.after.afk_channel_id)
           if (!beforeChannel) {
             before = 'None'

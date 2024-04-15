@@ -21,7 +21,7 @@ module.exports = {
           name: 'Unknown User',
           icon_url: 'https://logger.bot/staticfiles/red-x.png'
         },
-        description: `${CHANNEL_TYPE_MAP[channel.type] ? CHANNEL_TYPE_MAP[channel.type] : 'Unsupported channel type'} deleted (${channel.name})`,
+        description: `${CHANNEL_TYPE_MAP[channel.type] || 'Unsupported channel type'} deleted (${channel.name})`,
         fields: [{
           name: 'Name',
           value: channel.name

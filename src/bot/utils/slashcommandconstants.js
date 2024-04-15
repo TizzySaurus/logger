@@ -1,4 +1,4 @@
-const ERIS_CONSTANTS = require('eris').Constants
+const { Constants: ERIS_CONSTANTS } = require('eris');
 
 exports.commands = [
   {

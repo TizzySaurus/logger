@@ -16,7 +16,7 @@ module.exports = {
   name: 'interactionCreate',
   type: 'on',
   handle (interaction) {
-    return new Promise((resolve, reject) => { // why use a promise? awaitCustomID and handle are still sync and can share the timeout/callback maps nicely?
+    return new Promise((resolve) => { // why use a promise? awaitCustomID and handle are still sync and can share the timeout/callback maps nicely?
       if (interaction.applicationID !== global.bot.user.id) {
         resolve()
       }

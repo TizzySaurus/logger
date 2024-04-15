@@ -1,8 +1,9 @@
 const send = require('../modules/webhooksender')
-const updateMessageByID = require('../../db/interfaces/postgres/update').updateMessageByID
-const getMessageFromDB = require('../../db/interfaces/postgres/read').getMessageById
-const getMessageFromBatch = require('../../db/messageBatcher').getMessage
+const { updateMessageByID } = require('../../db/interfaces/postgres/update')
+const { getMessageById } = require('../../db/interfaces/postgres/read')
+const { getMessage } = require('../../db/messageBatcher')
 const escape = require('markdown-escape')
+const { chunkify } = require('../utils/constants')
 
 // markdown-escape is a single exported function, I probably don't need it as a node module lol
 
@@ -13,16 +14,16 @@ module.exports = {
     if (!newMessage.channel.guild || !newMessage.author) return
     if (newMessage.author.id === global.bot.user.id) return
     const member = newMessage.channel.guild.members.get(newMessage.author.id) // this member "should" be in cache at all times
-    oldMessage = getMessageFromBatch(newMessage.id)
+    let oldMessage = getMessage(newMessage.id)
     if (!oldMessage) {
-      oldMessage = await getMessageFromDB(newMessage.id)
+      oldMessage = await getMessageById(newMessage.id)
     }
     if (!oldMessage) return
     if (newMessage.author.bot && !global.bot.global.guildSettingsCache[newMessage.channel.guild.id].isLogBots()) return
     if ((newMessage.content === oldMessage.content) && (newMessage.attachments.length === oldMessage.attachment_b64.split("|").filter(Boolean).length)) return // content/attachments didn't change so don't process
     await processMessage(newMessage, oldMessage)
 
-    async function processMessage (newMessage, oldMessage) {
+    async function processMessage(newMessage, oldMessage) {
       const messageUpdateEvent = {
         guildID: newMessage.channel.guild.id,
         eventName: 'messageUpdate',
@@ -96,12 +97,12 @@ module.exports = {
       let newUrls = [];
       if (oldMessage.attachment_b64) {
         const oldImageUrls = oldMessage.attachment_b64.split("|").map(base64url => Buffer.from(base64url, "base64url").toString("utf-8")).filter(Boolean)
-        newAttachmentImages = newMessage.attachments.filter(attachment => attachment.content_type.startsWith("image"))
+        let newAttachmentImages = newMessage.attachments.filter(attachment => attachment.content_type.startsWith("image"))
         if (oldImageUrls.length > newAttachmentImages.length) {
           // Removed at least one image from the message
           newUrls = newAttachmentImages.map(img => img.url)
           const removedImageUrls = oldImageUrls.filter(url => !newUrls.includes(url))
-          removedImageUrls.forEach( (url, indx) => messageUpdateEvent.embeds[indx] = {
+          removedImageUrls.forEach((url, indx) => messageUpdateEvent.embeds[indx] = {
             ...messageUpdateEvent.embeds[indx],
             image: { url },
             url: "https://example.com"
@@ -125,14 +126,4 @@ module.exports = {
       }
     }
   }
-}
-
-function chunkify (toChunk) {
-  const lenChunks = Math.ceil(toChunk.length / 1000)
-  const chunksToReturn = []
-  for (let i = 0; i < lenChunks; i++) {
-    const chunkedStr = toChunk.substring((1000 * i), i === 0 ? 1000 : 1000 * (i + 1))
-    chunksToReturn.push(chunkedStr)
-  }
-  return chunksToReturn
 }

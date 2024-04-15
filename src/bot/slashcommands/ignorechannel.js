@@ -44,7 +44,7 @@ module.exports = {
             },
             color: EMBED_COLORS.RED
           }]
-        }).catch(_ => {})
+        }).catch(() => {})
       }
       const isDisabled = await ignoreChannel(interaction.guildID, channelOption?.value || interaction.channel.id)
       interaction.createMessage({
