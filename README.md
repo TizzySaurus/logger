@@ -1,3 +1,9 @@
+<details>
+  <summary>This is a fork of [Logger v3](https://github.com/curtisf/logger)</summary>
+  This fork includes some improvements and features the main code doesn't have. 
+  - Image/File logs for messageDelete / messageBulkDelete events.
+</details>
+
 <center>
   <img src="https://cdn.discordapp.com/avatars/1223274176786206853/8729a911ab234be299554a5ba006621d.png" />
 </center>
@@ -17,9 +23,8 @@ You are mostly on your own selfhosting this version. Required applications:
 4. Fill out **all** fields in it (even Sentry unless you hotpatch it out)
 5. `npm install`
 6. `npm run genDB`
-7. Set `ENABLE_TEXT_COMMANDS="true"` in .env
-8. `node index.js`
-9. Use your prefix to set the bot's commands. If yours is %, then you'd do `%setcmd global` to globally set commands, and `%setcmd guild` to quickly set server-specific slash commands
+7. `node index.js`
+8. Use your prefix to set the bot's commands. If yours is %, then you'd do `%setcmd global` to globally set commands, and `%setcmd guild` to quickly set server-specific slash commands
 
 ## Usage
 
