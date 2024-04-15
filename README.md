@@ -13,18 +13,19 @@ TizzyLog is a powerful [Discord](https://discord.com) bot meant to give staff me
 ## Installation
 
 You are mostly on your own selfhosting this version. Required applications:
-- PostgreSQL
-- Redis
-- NodeJS 16+
+- [PostgreSQL](https://www.postgresql.org/download/)
+- [Redis](https://redis.io/downloads/)
+- [NodeJS](https://nodejs.org/en/download)
 
 1. Setup Postgres and add a superuser (default user works)
 2. Clone bot repo and enter the created folder
 3. Copy .env.example into .env
-4. Fill out **all** fields in it (even Sentry unless you hotpatch it out)
+4. Fill out **all** of the **required** fields in `.env`
 5. `npm install`
 6. `npm run genDB`
 7. `node index.js`
 8. Use your prefix to set the bot's commands. If yours is %, then you'd do `%setcmd global` to globally set commands, and `%setcmd guild` to quickly set server-specific slash commands
+> NOTE: You'll need to restart your Discord client in order for them to show up! 
 
 ## Usage
 
