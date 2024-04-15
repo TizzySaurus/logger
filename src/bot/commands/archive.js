@@ -1,3 +1,4 @@
+const { displayUser } = require('../utils/constants');
 const { createHaste } = require('../utils/createHaste')
 
 module.exports = {
@@ -9,7 +10,7 @@ module.exports = {
     if (num < 5 || num > limit) return message.channel.createMessage(`That number is invalid! Please provide any number between 5 and ${limit}`)
 
     const messages = await message.channel.getMessages({ limit: num })
-    const pasteString = messages.reverse().filter(m => !m.applicationID).map(m => `${m.author.username}${m.author.discriminator === '0' ? '' : `#${m.author.discriminator}`} (${m.author.id}) | ${new Date(m.timestamp).toUTCString()}: ${m.content ? m.content : ''} ${m.embeds.length === 0 ? '' : `| {"embeds": [${m.embeds.map(e => JSON.stringify(e))}]}`} | ${m.attachments.length === 0 ? '' : ` =====> Attachment: ${m.attachments[0].filename}:${m.attachments[0].url}`}`).join('\r\n')
+    const pasteString = messages.reverse().filter(m => !m.applicationID).map(m => `${displayUser(m.author)} (${m.author.id}) | ${new Date(m.timestamp).toUTCString()}: ${m.content ? m.content : ''} ${m.embeds.length === 0 ? '' : `| {"embeds": [${m.embeds.map(e => JSON.stringify(e))}]}`} | ${m.attachments.length === 0 ? '' : ` =====> Attachment: ${m.attachments[0].filename}:${m.attachments[0].url}`}`).join('\r\n')
     const link = await createHaste(pasteString)
     if (!link) {
       return message.channel.createMessage('Unable to get the archive haste link')

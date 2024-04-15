@@ -1,4 +1,5 @@
 const escape = require('markdown-escape')
+const { displayUser } = require('../utils/constants')
 
 module.exports = {
   func: async message => {
@@ -15,7 +16,7 @@ module.exports = {
         value: `${message.channel.guild.verificationLevel}`
       }, {
         name: 'Owner',
-        value: `${owner ? `**${owner.username}${owner.discriminator === '0' ? '' : `#${owner.discriminator}`}** ` : ''}(${message.channel.guild.ownerID})`
+        value: `${owner ? `**${displayUser(owner)}** ` : ''}(${message.channel.guild.ownerID})`
       }, {
         name: 'Features',
         value: message.channel.guild.features.length !== 0 ? message.channel.guild.features.join(', ') : 'No Guild Features'

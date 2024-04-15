@@ -1,5 +1,6 @@
 const Eris = require('eris')
 const { getAuthorField } = require('../utils/embeds.js')
+const { displayUser } = require('../utils/constants.js')
 
 module.exports = {
   name: 'clearmydata',
@@ -12,7 +13,7 @@ module.exports = {
         timestamp: new Date(),
         footer: {
           icon_url: global.bot.user.avatarURL,
-          text: `${global.bot.user.username}#${global.bot.user.discriminator}`
+          text: displayUser(global.bot.user)
         },
         author: getAuthorField(interaction.member.user),
         fields: []

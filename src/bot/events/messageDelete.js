@@ -3,7 +3,7 @@ const { getMessageById } = require('../../db/interfaces/postgres/read')
 const { getMessage } = require('../../db/messageBatcher')
 const { deleteMessage } = require('../../db/interfaces/postgres/delete')
 const cacheGuild = require('../utils/cacheGuild')
-const { chunkify } = require('../utils/constants')
+const { chunkify, displayUser } = require('../utils/constants')
 
 module.exports = {
   name: 'messageDelete',
@@ -31,7 +31,7 @@ module.exports = {
       eventName: 'messageDelete',
       embeds: [{
         author: {
-          name: cachedUser ? `${cachedUser.username}${cachedUser.discriminator === '0' ? '' : `#${cachedUser.discriminator}`} ${member && member.nick ? `(${member.nick})` : ''}` : `Unknown User <@${cachedMessage.author_id}>`,
+          name: cachedUser ? `${displayUser(cachedUser)} ${member && member.nick ? `(${member.nick})` : ''}` : `Unknown User <@${cachedMessage.author_id}>`,
           icon_url: cachedUser ? cachedUser.avatarURL : 'https://logger.bot/staticfiles/red-x.png'
         },
         description: `Message deleted in <#${message.channel.id}>`,

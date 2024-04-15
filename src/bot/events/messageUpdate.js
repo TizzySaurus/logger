@@ -3,7 +3,7 @@ const { updateMessageByID } = require('../../db/interfaces/postgres/update')
 const { getMessageById } = require('../../db/interfaces/postgres/read')
 const { getMessage } = require('../../db/messageBatcher')
 const escape = require('markdown-escape')
-const { chunkify } = require('../utils/constants')
+const { chunkify, displayUser } = require('../utils/constants')
 
 // markdown-escape is a single exported function, I probably don't need it as a node module lol
 
@@ -29,10 +29,10 @@ module.exports = {
         eventName: 'messageUpdate',
         embeds: [{
           author: {
-            name: `${newMessage.author.username}${newMessage.author.discriminator === '0' ? '' : `#${newMessage.author.discriminator}`} ${member && member.nick ? `(${member.nick})` : ''}`,
+            name: `${displayUser(newMessage.author)} ${member && member.nick ? `(${member.nick})` : ''}`,
             icon_url: newMessage.author.avatarURL
           },
-          description: `**${newMessage.author.username}${newMessage.author.discriminator === '0' ? '' : `#${newMessage.author.discriminator}`}** ${member && member.nick ? `(${member.nick})` : ''} updated their message in: ${newMessage.channel.name}.`,
+          description: `**${displayUser(newMessage.author)}** ${member && member.nick ? `(${member.nick})` : ''} updated their message in: ${newMessage.channel.name}.`,
           fields: [
             {
               name: `${newMessage.channel.type === 10 || newMessage.channel.type === 11 || newMessage.channel.type === 12 ? 'Thread' : 'Channel'}`,

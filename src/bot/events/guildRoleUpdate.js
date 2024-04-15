@@ -1,4 +1,5 @@
 const send = require('../modules/webhooksender')
+const { displayUser } = require('../utils/constants')
 
 module.exports = {
   name: 'guildRoleUpdate',
@@ -66,7 +67,7 @@ module.exports = {
           value: `\`\`\`ini\nRole = ${role.id}\nPerpetrator = ${log.user.id}\`\`\``
         })
         guildRoleUpdateEvent.embeds[0].author = {
-          name: `${log.user.username}${log.user.discriminator === '0' ? '' : `#${log.user.discriminator}`}`,
+          name: displayUser(log.user),
           icon_url: log.user.avatarURL
         }
         if (guildRoleUpdateEvent.embeds[0].fields.length === 1) return

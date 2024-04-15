@@ -1,4 +1,5 @@
 const cacheGuild = require('../utils/cacheGuild')
+const { displayUser } = require('../utils/constants')
 const deleteGuild = require('../../db/interfaces/postgres/delete').deleteGuild
 const createGuild = require('../../db/interfaces/postgres/create').createGuild
 
@@ -6,15 +7,15 @@ module.exports = {
   func: async message => {
     const msg = await message.channel.createMessage({
       embeds: [{
-        description: `Are you absolutely sure, ${message.author.username}${message.author.discriminator === '0' ? '' : `#${message.author.discriminator}`} (${message.author.id})? Reply *yes* if so.`,
+        description: `Are you absolutely sure, ${displayUser(message.author)} (${message.author.id})? Reply *yes* if so.`,
         color: 3553599,
         timestamp: new Date(),
         footer: {
           icon_url: global.bot.user.avatarURL,
-          text: `${global.bot.user.username}#${global.bot.user.discriminator}`
+          text: displayUser(global.bot.user)
         },
         author: {
-          name: `${message.author.username}${message.author.discriminator === '0' ? '' : `#${message.author.discriminator}`}`,
+          name: displayUser(message.author),
           icon_url: message.author.avatarURL
         }
       }]
@@ -33,10 +34,10 @@ module.exports = {
                 timestamp: new Date(),
                 footer: {
                   icon_url: global.bot.user.avatarURL,
-                  text: `${global.bot.user.username}#${global.bot.user.discriminator}`
+                  text: displayUser(global.bot.user)
                 },
                 author: {
-                  name: `${message.author.username}${message.author.discriminator === '0' ? '' : `#${message.author.discriminator}`}`,
+                  name: displayUser(message.author),
                   icon_url: message.author.avatarURL
                 }
               }]
@@ -53,10 +54,10 @@ module.exports = {
             timestamp: new Date(),
             footer: {
               icon_url: global.bot.user.avatarURL,
-              text: `${global.bot.user.username}#${global.bot.user.discriminator}`
+              text: displayUser(global.bot.user)
             },
             author: {
-              name: `${message.author.username}${message.author.discriminator === '0' ? '' : `#${message.author.discriminator}`}`,
+              name: displayUser(message.author),
               icon_url: message.author.avatarURL
             }
           }]

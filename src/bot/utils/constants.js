@@ -118,15 +118,18 @@ exports.eventLogs = {
   guildMemberBoostUpdate: ''
 }
 
-
-function chunkify(toChunk) {
-  const lenChunks = Math.ceil(toChunk.length / 1000)
+exports.chunkify = (toChunk, maxCharacters = 1000) => {
+  const lenChunks = Math.ceil(toChunk.length / maxCharacters)
   const chunksToReturn = []
   for (let i = 0; i < lenChunks; i++) {
-    const chunkedStr = toChunk.substring((1000 * i), i === 0 ? 1000 : 1000 * (i + 1))
+    const chunkedStr = toChunk.substring((maxCharacters * i), i === 0 ? maxCharacters : maxCharacters * (i + 1))
     chunksToReturn.push(chunkedStr)
   }
   return chunksToReturn
-}
+};
 
-exports.chunkify = chunkify;
+/**
+ * @param {import("eris").Member | import("eris").User}) user 
+ * @returns {string}
+ */
+exports.displayUser = (user) => `${user.username}${user.discriminator !== "0" ? `#${user.discriminator}` : ""}`;

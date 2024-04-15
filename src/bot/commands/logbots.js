@@ -1,4 +1,5 @@
 const { toggleLogBots } = require('../../db/interfaces/postgres/update')
+const { displayUser } = require('../utils/constants')
 
 module.exports = {
   func: async message => {
@@ -10,10 +11,10 @@ module.exports = {
         timestamp: new Date(),
         footer: {
           icon_url: global.bot.user.avatarURL,
-          text: `${global.bot.user.username}#${global.bot.user.discriminator}`
+          text: displayUser(global.bot.user)
         },
         author: {
-          name: `${message.author.username}${message.author.discriminator === '0' ? '' : `#${message.author.discriminator}`}`,
+          name: displayUser(message.author),
           icon_url: message.author.avatarURL
         },
         fields: []

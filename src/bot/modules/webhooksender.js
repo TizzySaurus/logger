@@ -1,4 +1,4 @@
-const { EVENTS_USING_AUDITLOGS } = require('../utils/constants')
+const { EVENTS_USING_AUDITLOGS, displayUser } = require('../utils/constants')
 const webhookCache = require('./webhookcache')
 const guildWebhookCacher = require('./guildWebhookCacher')
 const cacheGuild = require('../utils/cacheGuild')
@@ -66,7 +66,7 @@ module.exports = async (pkg) => {
   } else if (webhook && !guildSettings.eventIsDisabled(pkg.eventName)) {
     if (!pkg.embeds[0].footer && !pkg.noFooter) {
       pkg.embeds[0].footer = {
-        text: `${global.bot.user.username}#${global.bot.user.discriminator}`,
+        text: displayUser(global.bot.user),
         icon_url: global.bot.user.avatarURL
       }
     }

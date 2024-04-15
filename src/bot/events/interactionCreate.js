@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const Eris = require('eris')
-const { EMBED_COLORS } = require('../utils/constants')
+const { EMBED_COLORS, displayUser } = require('../utils/constants')
 const { getEmbedFooter, getAuthorField } = require('../utils/embeds')
 const { NewsThreadChannel, PrivateThreadChannel, PublicThreadChannel } = require('eris')
 
@@ -105,7 +105,7 @@ module.exports = {
           }
           const guild = global.bot.guilds.get(interaction.guildID)
           if (guild) {
-            global.logger.info(`${interaction.member.username}${interaction.member.discriminator === '0' ? '' : `#${interaction.member.discriminator}`} (${interaction.member.id}) in ${interaction.channel.id} sent /${command.name}. The guild is called "${guild.name}", owned by ${guild.ownerID} and has ${guild.memberCount} members.`)
+            global.logger.info(`${displayUser(interaction.member)} (${interaction.member.id}) in ${interaction.channel.id} sent /${command.name}. The guild is called "${guild.name}", owned by ${guild.ownerID} and has ${guild.memberCount} members.`)
             try {
               command.func(interaction)
             } catch (commandError) {

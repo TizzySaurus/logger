@@ -1,4 +1,4 @@
-const { EMBED_COLORS } = require('../utils/constants.js')
+const { EMBED_COLORS, displayUser } = require('../utils/constants.js')
 const { getEmbedFooter, getAuthorField } = require('../utils/embeds.js')
 const { createHaste } = require('../utils/createHaste.js')
 
@@ -35,11 +35,11 @@ module.exports = {
       }).catch(() => { })
     }
     const fetchedMessages = await global.bot.getChannel(interaction.channel.id).getMessages({ limit: interaction.data.options[0].value })
-    const pasteString = fetchedMessages.reverse().filter(m => !m.applicationID).map(m => `${m.author.username}${m.author.discriminator === '0' ? '' : `#${m.author.discriminator}`} (${m.author.id}) | ${new Date(m.timestamp)}: ${m.content || ''} | ${m.embeds.length === 0 ? '' : `{"embeds": [${m.embeds.map(e => JSON.stringify(e))}]}`} | ${m.attachments.length === 0 ? '' : ` ${m.attachments.map((c) => `=====> Attachment: ${c.filename}: ${m.url}`).join(" | ")}`}`).join('\r\n')
+    const pasteString = fetchedMessages.reverse().filter(m => !m.applicationID).map(m => `${displayUser(m.author)} (${m.author.id}) | ${new Date(m.timestamp)}: ${m.content || ''} | ${m.embeds.length === 0 ? '' : `{"embeds": [${m.embeds.map(e => JSON.stringify(e))}]}`} | ${m.attachments.length === 0 ? '' : ` ${m.attachments.map((c) => `=====> Attachment: ${c.filename}: ${m.url}`).join(" | ")}`}`).join('\r\n')
     await interaction.createMessage({
       embeds: [{ // make sure followup message is created before doing any more work
         title: 'Processing',
-        description: `Processing request from ${interaction.member.username}${interaction.member.discriminator === '0' ? '' : `#${interaction.member.discriminator}`} for an archive of ${interaction.data.options[0].value} messages`,
+        description: `Processing request from ${displayUser(interaction.member)} for an archive of ${interaction.data.options[0].value} messages`,
         thumbnail: {
           url: interaction.member.user.dynamicAvatarURL(null, 64)
         },

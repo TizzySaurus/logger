@@ -1,4 +1,4 @@
-const { EMBED_COLORS } = require('../utils/constants')
+const { EMBED_COLORS, displayUser } = require('../utils/constants')
 
 const notablePermissions = [
   'kickMembers',
@@ -40,7 +40,7 @@ module.exports = {
     const roles = member.roles.map(r => guild.roles.get(r)).sort((a, b) => b.position - a.position)
     const fields = [{
       name: 'Name',
-      value: `${member.username}${member.discriminator === '0' ? '' : `#${member.discriminator}`} ${member.nick ? `(**${member.nick}**)` : ''} (${member.id})`
+      value: `${displayUser(member)} ${member.nick ? `(**${member.nick}**)` : ''} (${member.id})`
     }, {
       name: 'Join Date',
       value: `<t:${Math.round(member.joinedAt / 1000)}:F> (<t:${Math.round(member.joinedAt / 1000)}:R>)`

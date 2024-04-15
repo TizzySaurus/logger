@@ -1,5 +1,6 @@
 const send = require('../modules/webhooksender')
 const escape = require('markdown-escape')
+const { displayUser } = require('../utils/constants')
 const CHANNEL_TYPE_MAP = {
   0: 'Text channel',
   2: 'Voice channel',
@@ -35,7 +36,7 @@ module.exports = {
           icon_url: 'https://logger.bot/staticfiles/red-x.png'
         },
         color: 0x03d3fc,
-        description: `${CHANNEL_TYPE_MAP[channel.type] ? CHANNEL_TYPE_MAP[channel.type] : 'unsupported channel'} <#${channel.id}> was updated (${escape(channel.name)})`,
+        description: `${CHANNEL_TYPE_MAP[channel.type] || 'unsupported channel'} <#${channel.id}> was updated (${escape(channel.name)})`,
         fields: [{
           name: 'Creation date',
           value: `<t:${Math.round(((channel.id / 4194304) + 1420070400000) / 1000)}:F>`,
@@ -201,7 +202,7 @@ module.exports = {
     }
 
     if (log && user) {
-      channelUpdateEvent.embeds[0].author.name = `${user.username}${user.discriminator === '0' ? '' : `#${user.discriminator}`}`
+      channelUpdateEvent.embeds[0].author.name = `${displayUser(user)}`
       channelUpdateEvent.embeds[0].author.icon_url = user.avatarURL
       if (channel.type === 13) {
         channelUpdateEvent.embeds[0].description = `Stage Channel **${channel.name}** was ${channel.topic === null ? 'closed' : 'opened'}`

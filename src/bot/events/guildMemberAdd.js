@@ -1,5 +1,6 @@
 const send = require('../modules/webhooksender')
 const inviteCache = require('../modules/invitecache')
+const { displayUser } = require('../utils/constants')
 
 module.exports = {
   name: 'guildMemberAdd',
@@ -10,13 +11,13 @@ module.exports = {
       eventName: 'guildMemberAdd',
       embeds: [{
         author: {
-          name: `${member.username}${member.discriminator === '0' ? '' : `#${member.discriminator}`}`,
+          name: displayUser(member),
           icon_url: member.avatarURL
         },
         description: `<@${member.id}> joined `,
         fields: [{
           name: 'Name',
-          value: `${member.username}${member.discriminator === '0' ? '' : `#${member.discriminator}`} (${member.id}) ${member.mention}`
+          value: `${displayUser(member)} (${member.id}) ${member.mention}`
         }, {
           name: 'Joined At',
           value: `<t:${Math.round(Date.now() / 1000)}:F>`
