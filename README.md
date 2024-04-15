@@ -5,9 +5,10 @@
 TizzyLog is a powerful [Discord](https://discord.com) bot meant to give staff members oversight over the various actions taking place in their server. Come talk about me with my creator at [TizzyLog server](https://discord.gg/WYTxVjzHnc).
 
 ## Fork Details: 
-- This is a fork of [Logger v3](https://github.com/curtisf/logger)
- - This fork includes some improvements and features the main repo doesn't have. 
-  - Image/File logs for messageUpdate, messageDelete, messageBulkDelete events.
+**This is a fork of [Logger v3](https://github.com/curtisf/logger)**
+- Public Instance: [Invite](https://discord.com/oauth2/authorize?client_id=1223274176786206853)
+- This fork includes some improvements and features the main repo doesn't have. 
+> - Image/File logs for `messageUpdate`, `messageDelete`, `messageBulkDelete` events.
 
 ## Installation
 
