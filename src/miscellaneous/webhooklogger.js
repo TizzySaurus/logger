@@ -7,7 +7,7 @@ setInterval(() => {
   globalHookErrors-- // This timeout exists so that if the shard manager starts to spew errors, I don't get IP banned from Discord.
 }, 5000)
 
-function send(type = "Generic", embeds = [], username = null, avatar_url = null) {
+function send(type = 'Generic', embeds = [], username = null, avatar_url = null) {
   if (globalHookErrors > 5) {
     return
   }
@@ -23,7 +23,7 @@ function send(type = "Generic", embeds = [], username = null, avatar_url = null)
 }
 
 function fatal(message) {
-  send("Fatal Error", [
+  send('Fatal Error', [
     {
       title: 'Fatal',
       description: message,
@@ -33,7 +33,7 @@ function fatal(message) {
 }
 
 function error(message) {
-  send("Error", [
+  send('Error', [
     {
       title: 'Error',
       description: message,
@@ -43,7 +43,7 @@ function error(message) {
 }
 
 function warn(message) {
-  send(`Warning`, [
+  send('Warning', [
     {
       title: 'Warning',
       description: message,
@@ -53,7 +53,7 @@ function warn(message) {
 }
 
 function generic(message) {
-  send("Generic", [
+  send('Generic', [
     {
       title: 'Generic',
       description: message,
@@ -63,13 +63,13 @@ function generic(message) {
 }
 
 function custom(message) {
-  send("Custom", [
+  send('Custom', [
     {
       title: message.title || 'Custom Notification',
       color: message.color || 6052351,
       description: message.description || 'No message description provided.'
     }
-  ], message.title, message.avatar_url);
+  ], message.title, message.avatar_url)
 }
 
 exports.error = error
