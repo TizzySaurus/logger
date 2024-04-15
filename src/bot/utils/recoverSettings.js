@@ -1,5 +1,5 @@
 const { getAllGuilds } = require('../../db/interfaces/postgres/read')
-const {createGuild} = require('../../db/interfaces/postgres/create')
+const { createGuild } = require('../../db/interfaces/postgres/create')
 
 module.exports = async () => { // If the bot sees a guild that the DB doesn't know, create a record for it
   const allGuilds = await getAllGuilds()

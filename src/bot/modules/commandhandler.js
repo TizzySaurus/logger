@@ -1,9 +1,9 @@
-const Eris = require('eris')
+const { TextVoiceChannel } = require('eris')
 const statAggregator = require('./statAggregator')
 const { displayUser } = require('../utils/constants')
 
 module.exports = async message => {
-  if (message.author.bot || !message.member || message.channel instanceof Eris.TextVoiceChannel) return
+  if (message.author.bot || !message.member || message.channel instanceof TextVoiceChannel) return
   if (message.content.startsWith(process.env.GLOBAL_BOT_PREFIX)) {
     const cmd = message.content.substring(process.env.GLOBAL_BOT_PREFIX.length).split(' ')[0].toLowerCase()
     const splitSuffix = message.content.substring(process.env.GLOBAL_BOT_PREFIX).split(' ')
@@ -12,7 +12,7 @@ module.exports = async message => {
   }
 }
 
-function processCommand (message, commandName, suffix) {
+function processCommand(message, commandName, suffix) {
   const command = global.bot.commands[commandName]
   if (!command) return
   const bp = message.channel.permissionsOf(global.bot.user.id).json

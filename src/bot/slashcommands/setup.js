@@ -1,4 +1,4 @@
-const Eris = require('eris')
+const { Constants } = require('eris')
 const { v4: uuidv4 } = require('uuid')
 const { setEventsLogId } = require('../../db/interfaces/postgres/update')
 const { EMBED_COLORS, PRESET_EVENT_MAP, ALL_EVENTS } = require('../utils/constants')
@@ -23,9 +23,9 @@ async function handlePresetSetup (interaction, recursionUUID) {
   const followupUUID = recursionUUID || uuidv4()
   try {
     const components = [{
-      type: Eris.Constants.ComponentTypes.ACTION_ROW,
+      type: Constants.ComponentTypes.ACTION_ROW,
       components: [{
-        type: Eris.Constants.ComponentTypes.SELECT_MENU,
+        type: Constants.ComponentTypes.SELECT_MENU,
         custom_id: followupUUID,
         max_values: 9,
         min_values: 0,
@@ -86,9 +86,9 @@ async function handlePresetSetup (interaction, recursionUUID) {
       }
     }
     if (recursionUUID) {
-      await interaction.editOriginalMessage({ embeds: [setupEmbed], flags: Eris.Constants.MessageFlags.EPHEMERAL, components })
+      await interaction.editOriginalMessage({ embeds: [setupEmbed], flags: Constants.MessageFlags.EPHEMERAL, components })
     } else {
-      await interaction.createMessage({ embeds: [setupEmbed], flags: Eris.Constants.MessageFlags.EPHEMERAL, components })
+      await interaction.createMessage({ embeds: [setupEmbed], flags: Constants.MessageFlags.EPHEMERAL, components })
     }
   } catch (e) {
     global.logger.error('error handling preset menu', e)
@@ -135,7 +135,7 @@ async function handlePresetSetup (interaction, recursionUUID) {
         footer: getEmbedFooter(global.bot.user),
         author: getAuthorField(interaction.member.user)
       }],
-      flags: Eris.Constants.MessageFlags.EPHEMERAL
+      flags: Constants.MessageFlags.EPHEMERAL
     })
     return
   }
@@ -156,9 +156,9 @@ async function handleIndividualSetup (interaction, recursionUUID) {
   const followupUUID = recursionUUID || uuidv4()
   try {
     const components = [{
-      type: Eris.Constants.ComponentTypes.ACTION_ROW,
+      type: Constants.ComponentTypes.ACTION_ROW,
       components: [{
-        type: Eris.Constants.ComponentTypes.SELECT_MENU,
+        type: Constants.ComponentTypes.SELECT_MENU,
         custom_id: followupUUID,
         max_values: 24,
         min_values: 0,
@@ -375,9 +375,9 @@ async function handleIndividualSetup (interaction, recursionUUID) {
       }
     }
     if (recursionUUID) {
-      await interaction.editOriginalMessage({ embeds: [setupEmbed], flags: Eris.Constants.MessageFlags.EPHEMERAL, components })
+      await interaction.editOriginalMessage({ embeds: [setupEmbed], flags: Constants.MessageFlags.EPHEMERAL, components })
     } else {
-      await interaction.createMessage({ embeds: [setupEmbed], flags: Eris.Constants.MessageFlags.EPHEMERAL, components })
+      await interaction.createMessage({ embeds: [setupEmbed], flags: Constants.MessageFlags.EPHEMERAL, components })
     }
   } catch (e) {
     global.logger.error('Error handling preset menu', e)
@@ -421,7 +421,7 @@ async function handleIndividualSetup (interaction, recursionUUID) {
         footer: getEmbedFooter(global.bot.user),
         author: getAuthorField(interaction.member.user)
       }],
-      flags: Eris.Constants.MessageFlags.EPHEMERAL
+      flags: Constants.MessageFlags.EPHEMERAL
     })
     return
   }
@@ -451,7 +451,7 @@ async function handleListLogSetup (interaction) {
       description: logLines.length !== 0 ? logLines.join('\n') : 'I am not logging any events to this server, see `/setup` or `/help` for setup help.',
       color: EMBED_COLORS.PURPLED_BLUE
     }],
-    flags: Eris.Constants.MessageFlags.EPHEMERAL
+    flags: Constants.MessageFlags.EPHEMERAL
   }).catch(() => {})
 }
 

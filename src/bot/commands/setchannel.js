@@ -1,33 +1,7 @@
 const { setEventsLogId } = require('../../db/interfaces/postgres/update')
 const guildWebhookCacher = require('../modules/guildWebhookCacher')
+const { ALL_EVENTS: eventList } = require("../utils/constants")
 const cacheGuild = require('../utils/cacheGuild')
-
-const eventList = [
-  'channelCreate',
-  'channelUpdate',
-  'channelDelete',
-  'guildBanAdd',
-  'guildBanRemove',
-  'guildRoleCreate',
-  'guildRoleDelete',
-  'guildRoleUpdate',
-  'guildUpdate',
-  'messageDelete',
-  'messageDeleteBulk',
-  'messageUpdate',
-  'guildMemberAdd',
-  'guildMemberKick',
-  'guildMemberRemove',
-  'guildMemberUpdate',
-  'voiceChannelLeave',
-  'voiceChannelJoin',
-  'voiceStateUpdate',
-  'voiceChannelSwitch',
-  'guildMemberNickUpdate',
-  'guildMemberVerify',
-  'guildEmojisUpdate',
-  'guildMemberBoostUpdate'
-]
 
 module.exports = {
   func: async (message, suffix) => {
