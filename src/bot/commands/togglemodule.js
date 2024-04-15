@@ -1,6 +1,5 @@
-const { displayUser } = require('../utils/constants')
-const disableEvent = require('../../db/interfaces/postgres/update').disableEvent
-const eventList = require('../utils/constants').ALL_EVENTS
+const { displayUser, ALL_EVENTS: eventList } = require('../utils/constants')
+const { disableEvent } = require('../../db/interfaces/postgres/update')
 
 module.exports = {
   func: async (message, suffix) => {

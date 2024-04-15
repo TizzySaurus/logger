@@ -1,7 +1,7 @@
 const cacheGuild = require('../utils/cacheGuild')
 const { displayUser } = require('../utils/constants')
-const deleteGuild = require('../../db/interfaces/postgres/delete').deleteGuild
-const createGuild = require('../../db/interfaces/postgres/create').createGuild
+const { deleteGuild } = require('../../db/interfaces/postgres/delete')
+const { createGuild } = require('../../db/interfaces/postgres/create')
 
 module.exports = {
   func: async message => {
@@ -22,7 +22,7 @@ module.exports = {
     })
     let i = 0
     let complete = false
-    global.bot.on('messageCreate', async function temp (m) {
+    global.bot.on('messageCreate', async function temp(m) {
       if (i === 0) {
         setTimeout(() => {
           global.bot.removeListener('messageCreate', temp)

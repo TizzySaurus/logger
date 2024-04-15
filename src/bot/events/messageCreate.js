@@ -1,5 +1,5 @@
 const commandHandler = require('../modules/commandhandler')
-const cacheMessage = require('../../db/interfaces/postgres/create').cacheMessage
+const { cacheMessage } = require('../../db/interfaces/postgres/create')
 const cacheGuild = require('../utils/cacheGuild')
 
 module.exports = {

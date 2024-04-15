@@ -1,6 +1,5 @@
 const { displayUser } = require('../utils/constants')
-
-const ignoreChannel = require('../../db/interfaces/postgres/update').ignoreChannel
+const { ignoreChannel } = require('../../db/interfaces/postgres/update')
 
 module.exports = {
   func: async (message, suffix) => {
