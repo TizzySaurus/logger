@@ -23,11 +23,13 @@ function send(type = "Generic", embeds = [], username = null, avatar_url = null)
 }
 
 function fatal(message) {
-  send("Fatal Error", [{
-    title: 'Fatal',
-    description: message,
-    color: 16777215
-  }])
+  send("Fatal Error", [
+    {
+      title: 'Fatal',
+      description: message,
+      color: 16777215
+    }
+  ])
 }
 
 function error(message) {
