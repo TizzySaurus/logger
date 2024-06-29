@@ -1,4 +1,5 @@
 const send = require('../modules/webhooksender')
+const { displayUser } = require('../utils/constants')
 
 module.exports = {
   name: 'guildBanRemove',
@@ -9,13 +10,13 @@ module.exports = {
       eventName: 'guildBanRemove',
       embeds: [{
         author: {
-          name: `${user.username}${user.discriminator === '0' ? '' : `#${user.discriminator}`}`,
+          name: `${displayUser(user)}`,
           icon_url: user.avatarURL
         },
-        description: `${user.username}${user.discriminator === '0' ? '' : `#${user.discriminator}`} was unbanned`,
+        description: `${displayUser(user)} was unbanned`,
         fields: [{
           name: 'User Information',
-          value: `${user.username}${user.discriminator === '0' ? '' : `#${user.discriminator}`} (${user.id}) ${user.mention} ${user.bot ? '\nIs a bot' : ''}`
+          value: `${displayUser(user)} (${user.id}) ${user.mention} ${user.bot ? '\nIs a bot' : ''}`
         }, {
           name: 'Reason',
           value: 'None provided'
@@ -34,7 +35,7 @@ module.exports = {
       if (log.reason) guildBanRemoveEvent.embeds[0].fields[1].value = log.reason
       guildBanRemoveEvent.embeds[0].fields[2].value = `\`\`\`ini\nUser = ${user.id}\nPerpetrator = ${perp.id}\`\`\``
       guildBanRemoveEvent.embeds[0].footer = {
-        text: `${perp.username}${perp.discriminator === '0' ? '' : `#${perp.discriminator}`}`,
+        text: displayUser(perp),
         icon_url: perp.avatarURL
       }
       await send(guildBanRemoveEvent)

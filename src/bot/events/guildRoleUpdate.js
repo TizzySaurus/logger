@@ -1,4 +1,5 @@
 const send = require('../modules/webhooksender')
+const { displayUser } = require('../utils/constants')
 
 module.exports = {
   name: 'guildRoleUpdate',
@@ -66,7 +67,7 @@ module.exports = {
           value: `\`\`\`ini\nRole = ${role.id}\nPerpetrator = ${log.user.id}\`\`\``
         })
         guildRoleUpdateEvent.embeds[0].author = {
-          name: `${log.user.username}${log.user.discriminator === '0' ? '' : `#${log.user.discriminator}`}`,
+          name: displayUser(log.user),
           icon_url: log.user.avatarURL
         }
         if (guildRoleUpdateEvent.embeds[0].fields.length === 1) return
@@ -92,7 +93,7 @@ function intToHex (num) {
 }
 
 function toTitleCase (str) {
-  return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
+  return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase() })
 }
 
 function rgbToHex (r, g, b) { // bitwise math is black magic

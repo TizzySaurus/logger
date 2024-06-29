@@ -1,29 +1,30 @@
 const cacheGuild = require('../utils/cacheGuild')
-const deleteGuild = require('../../db/interfaces/postgres/delete').deleteGuild
-const createGuild = require('../../db/interfaces/postgres/create').createGuild
+const { displayUser } = require('../utils/constants')
+const { deleteGuild } = require('../../db/interfaces/postgres/delete')
+const { createGuild } = require('../../db/interfaces/postgres/create')
 
 module.exports = {
   func: async message => {
     const msg = await message.channel.createMessage({
       embeds: [{
-        description: `Are you absolutely sure, ${message.author.username}${message.author.discriminator === '0' ? '' : `#${message.author.discriminator}`} (${message.author.id})? Reply *yes* if so.`,
+        description: `Are you absolutely sure, ${displayUser(message.author)} (${message.author.id})? Reply *yes* if so.`,
         color: 3553599,
         timestamp: new Date(),
         footer: {
           icon_url: global.bot.user.avatarURL,
-          text: `${global.bot.user.username}#${global.bot.user.discriminator}`
+          text: displayUser(global.bot.user)
         },
         author: {
-          name: `${message.author.username}${message.author.discriminator === '0' ? '' : `#${message.author.discriminator}`}`,
+          name: displayUser(message.author),
           icon_url: message.author.avatarURL
         }
       }]
     })
     let i = 0
     let complete = false
-    global.bot.on('messageCreate', async function temp (m) {
+    global.bot.on('messageCreate', async function temp(m) {
       if (i === 0) {
-        const timeout = setTimeout(() => {
+        setTimeout(() => {
           global.bot.removeListener('messageCreate', temp)
           if (!complete) {
             message.channel.createMessage({
@@ -33,10 +34,10 @@ module.exports = {
                 timestamp: new Date(),
                 footer: {
                   icon_url: global.bot.user.avatarURL,
-                  text: `${global.bot.user.username}#${global.bot.user.discriminator}`
+                  text: displayUser(global.bot.user)
                 },
                 author: {
-                  name: `${message.author.username}${message.author.discriminator === '0' ? '' : `#${message.author.discriminator}`}`,
+                  name: displayUser(message.author),
                   icon_url: message.author.avatarURL
                 }
               }]
@@ -53,10 +54,10 @@ module.exports = {
             timestamp: new Date(),
             footer: {
               icon_url: global.bot.user.avatarURL,
-              text: `${global.bot.user.username}#${global.bot.user.discriminator}`
+              text: displayUser(global.bot.user)
             },
             author: {
-              name: `${message.author.username}${message.author.discriminator === '0' ? '' : `#${message.author.discriminator}`}`,
+              name: displayUser(message.author),
               icon_url: message.author.avatarURL
             }
           }]

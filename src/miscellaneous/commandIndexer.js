@@ -1,14 +1,14 @@
-const fs = require('fs')
-const path = require('path')
+const { readdirSync } = require('fs')
+const { resolve } = require('path')
 const GenericCommand = require('../bot/bases/GenericCommand')
 
 module.exports = () => {
-  const files = fs.readdirSync(path.resolve('src', 'bot', 'commands'))
+  const files = readdirSync(resolve('src', 'bot', 'commands'))
   files.forEach(filename => {
-    if (require.cache[path.resolve('src', 'bot', 'commands', filename)]) {
-      delete require.cache[path.resolve('src', 'bot', 'commands', filename)]
+    if (require.cache[resolve('src', 'bot', 'commands', filename)]) {
+      delete require.cache[resolve('src', 'bot', 'commands', filename)]
     }
     // truly gross code that should be remade eventually
-    new GenericCommand(require(path.resolve('src', 'bot', 'commands', filename)))
+    new GenericCommand(require(resolve('src', 'bot', 'commands', filename)))
   })
 }

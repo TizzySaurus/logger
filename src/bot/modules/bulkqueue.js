@@ -1,6 +1,6 @@
 const cacheGuild = require('../utils/cacheGuild')
 const guildWebhookCacher = require('./guildWebhookCacher')
-const setEventsByChannelID = require('../../db/interfaces/postgres/update').setEventsLogId
+const { setEventsLogId } = require('../../db/interfaces/postgres/update')
 
 const webhookIDToQueue = new Map()
 const webhookIDToTimeout = new Map()
@@ -71,9 +71,9 @@ function getEmbedCharLens (embeds) {
 function sendBulkLog (senderPkg, embeds, guildSettings) {
   global.bot.executeWebhook(senderPkg.webhookID, senderPkg.webhookToken, {
     file: senderPkg.file ? senderPkg.file : '',
-    username: global.bot.user.username,
-    avatarURL: global.bot.user.avatarURL,
-    embeds: embeds,
+    username: senderPkg.username || global.bot.user.username,
+    avatarURL: senderPkg.avatarURL || global.bot.user.avatarURL,
+    embeds,
     allowedMentions: { // even though this is an embed and cannot ping, why not
       everyone: false,
       roles: false,
@@ -87,7 +87,7 @@ function sendBulkLog (senderPkg, embeds, guildSettings) {
     }
     if (e.code == '10015') { // Webhook doesn't exist anymore.
       await global.redis.del(`webhook-${guildSettings.getEventByName(senderPkg.eventName)}`)
-      await setEventsByChannelID(senderPkg.guildID, '', [senderPkg.eventName])
+      await setEventsLogId(senderPkg.guildID, '', [senderPkg.eventName])
       await cacheGuild(senderPkg.guildID)
       return await guildWebhookCacher(senderPkg.guildID, guildSettings.getEventByName(senderPkg.eventName))
     } else {

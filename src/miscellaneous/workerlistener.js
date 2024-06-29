@@ -12,7 +12,7 @@ if (process.env.STAT_SUBMISSION_INTERVAL && !isNaN(parseInt(process.env.STAT_SUB
     allWorkers.forEach(w => {
       w.send({ type: 'sendStats' })
     })
-    await new Promise((resolve, reject) => {
+    await new Promise((resolve) => {
       setTimeout(() => {
         resolve('ok')
       }, 2000)

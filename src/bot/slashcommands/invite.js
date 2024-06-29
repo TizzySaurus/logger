@@ -1,4 +1,4 @@
-const Eris = require('eris')
+const { Constants } = require('eris')
 const { EMBED_COLORS } = require('../utils/constants.js')
 const { getEmbedFooter } = require('../utils/embeds')
 
@@ -22,7 +22,7 @@ module.exports = {
         }],
         footer: getEmbedFooter(global.bot.user)
       }],
-      flags: Eris.Constants.MessageFlags.EPHEMERAL
+      flags: Constants.MessageFlags.EPHEMERAL
     })
   }
 }

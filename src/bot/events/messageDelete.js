@@ -1,8 +1,9 @@
 const send = require('../modules/webhooksender')
-const getMessageFromDB = require('../../db/interfaces/postgres/read').getMessageById
-const getMessageFromBatch = require('../../db/messageBatcher').getMessage
-const deleteMessage = require('../../db/interfaces/postgres/delete').deleteMessage
+const { getMessageById } = require('../../db/interfaces/postgres/read')
+const { getMessage } = require('../../db/messageBatcher')
+const { deleteMessage } = require('../../db/interfaces/postgres/delete')
 const cacheGuild = require('../utils/cacheGuild')
+const { chunkify, displayUser } = require('../utils/constants')
 
 module.exports = {
   name: 'messageDelete',
@@ -12,10 +13,7 @@ module.exports = {
     const guildSettings = global.bot.guildSettingsCache[message.channel.guild.id]
     if (!guildSettings) await cacheGuild(message.channel.guild.id)
     if (global.bot.guildSettingsCache[message.channel.guild.id].isChannelIgnored(message.channel.id)) return
-    let cachedMessage = getMessageFromBatch(message.id)
-    if (!cachedMessage) {
-      cachedMessage = await getMessageFromDB(message.id)
-    }
+    const cachedMessage = getMessage(message.id) || await getMessageById(message.id);
     if (!cachedMessage) return
     await deleteMessage(message.id)
     let cachedUser = global.bot.users.get(cachedMessage.author_id)
@@ -33,7 +31,7 @@ module.exports = {
       eventName: 'messageDelete',
       embeds: [{
         author: {
-          name: cachedUser ? `${cachedUser.username}${cachedUser.discriminator === '0' ? '' : `#${cachedUser.discriminator}`} ${member && member.nick ? `(${member.nick})` : ''}` : `Unknown User <@${cachedMessage.author_id}>`,
+          name: cachedUser ? `${displayUser(cachedUser)} ${member && member.nick ? `(${member.nick})` : ''}` : `Unknown User <@${cachedMessage.author_id}>`,
           icon_url: cachedUser ? cachedUser.avatarURL : 'https://logger.bot/staticfiles/red-x.png'
         },
         description: `Message deleted in <#${message.channel.id}>`,
@@ -44,7 +42,7 @@ module.exports = {
     let messageChunks = []
     if (cachedMessage.content) {
       if (cachedMessage.content.length > 1000) {
-        messageChunks = chunkify(cachedMessage.content.replace(/\"/g, '"').replace(/`/g, ''))
+        messageChunks = chunkify(cachedMessage.content.replace(/"/g, '"').replace(/`/g, ''))
       } else {
         messageChunks.push(cachedMessage.content)
       }
@@ -66,7 +64,7 @@ module.exports = {
     })
 
     if (cachedMessage.attachment_b64) {
-      attachment_b64urls = cachedMessage.attachment_b64.split("|")
+      let attachment_b64urls = cachedMessage.attachment_b64.split("|")
       attachment_b64urls.forEach(
         (base64url, indx) => messageDeleteEvent.embeds[indx] = {
           ...messageDeleteEvent.embeds[indx],
@@ -77,14 +75,4 @@ module.exports = {
     }
     await send(messageDeleteEvent)
   }
-}
-
-function chunkify (toChunk) {
-  const lenChunks = Math.ceil(toChunk.length / 1000)
-  const chunksToReturn = []
-  for (let i = 0; i < lenChunks; i++) {
-    const chunkedStr = toChunk.substring((1000 * i), i === 0 ? 1000 : 1000 * (i + 1))
-    chunksToReturn.push(chunkedStr)
-  }
-  return chunksToReturn
 }

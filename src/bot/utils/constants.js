@@ -89,3 +89,65 @@ exports.PRESET_EVENT_MAP = {
   channel: ['channelCreate', 'channelUpdate', 'channelDelete'],
   all: this.ALL_EVENTS
 }
+
+// Define the events once in this file vs in multiple files.
+exports.eventLogs = {
+  channelCreate: '',
+  channelUpdate: '',
+  channelDelete: '',
+  guildBanAdd: '',
+  guildBanRemove: '',
+  guildRoleCreate: '',
+  guildRoleDelete: '',
+  guildRoleUpdate: '',
+  guildUpdate: '',
+  messageDelete: '',
+  messageDeleteBulk: '',
+  messageUpdate: '',
+  guildMemberAdd: '',
+  guildMemberKick: '',
+  guildMemberRemove: '',
+  guildMemberUpdate: '',
+  guildMemberVerify: '',
+  voiceChannelLeave: '',
+  voiceChannelJoin: '',
+  voiceStateUpdate: '',
+  voiceChannelSwitch: '',
+  guildEmojisUpdate: '',
+  guildMemberNickUpdate: '',
+  guildMemberBoostUpdate: ''
+}
+
+exports.chunkify = (toChunk, maxCharacters = 1000) => {
+  const lenChunks = Math.ceil(toChunk.length / maxCharacters)
+  const chunksToReturn = []
+  for (let i = 0; i < lenChunks; i++) {
+    const chunkedStr = toChunk.substring((maxCharacters * i), i === 0 ? maxCharacters : maxCharacters * (i + 1))
+    chunksToReturn.push(chunkedStr)
+  }
+  return chunksToReturn
+};
+
+/**
+ * @param {import("eris").Member | import("eris").User}) user 
+ * @returns {string}
+ */
+exports.displayUser = (user) => `${user.username}${user.discriminator !== "0" ? `#${user.discriminator}` : ""}`;
+
+// All channel types from: https://discord.com/developers/docs/resources/channel#channel-object-channel-types
+// Used for the channel* events. 
+exports.CHANNEL_TYPE_MAP = {
+  0: 'Text channel',
+  1: 'DM channel',
+  2: 'Voice channel',
+  3: 'Group DM channel',
+  4: 'Category channel',
+  5: 'Announcement channel',
+  10: 'Announcement thread channel',
+  11: 'Public Thread channel',
+  12: 'Private Thread channel',
+  13: 'Stage channel',
+  14: 'Directory channel',
+  15: 'Forum channel',
+  16: 'Media channel'
+}

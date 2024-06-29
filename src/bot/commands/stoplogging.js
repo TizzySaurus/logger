@@ -1,7 +1,6 @@
-const clearEventByID = require('../../db/interfaces/postgres/update').clearEventByID
+const { clearEventByID, setEventsLogId } = require('../../db/interfaces/postgres/update')
+const { displayUser, ALL_EVENTS: eventList } = require('../utils/constants')
 const cacheGuild = require('../utils/cacheGuild')
-const setEventLogs = require('../../db/interfaces/postgres/update').setEventsLogId
-const eventList = require('../utils/constants').ALL_EVENTS
 
 module.exports = {
   func: async (message, suffix) => {
@@ -14,7 +13,7 @@ module.exports = {
     if (events.length === 0 && suffix) {
       message.channel.createMessage(`<@${message.author.id}>, none of the provided events are valid to be unset. Look at ${process.env.GLOBAL_BOT_PREFIX}help to see what is valid.`)
     } else if (suffix && events.length !== 0) {
-      await setEventLogs(message.channel.guild.id, '', events)
+      await setEventsLogId(message.channel.guild.id, '', events)
       await cacheGuild(message.channel.guild.id)
       message.channel.createMessage(`<@${message.author.id}>, your selected events will not be logged here anymore.`)
     } else if (!suffix) {
@@ -27,10 +26,10 @@ module.exports = {
           timestamp: new Date(),
           footer: {
             icon_url: global.bot.user.avatarURL,
-            text: `${global.bot.user.username}#${global.bot.user.discriminator}`
+            text: displayUser(global.bot.user)
           },
           author: {
-            name: `${message.author.username}${message.author.discriminator === '0' ? '' : `#${message.author.discriminator}`}`,
+            name: displayUser(message.author),
             icon_url: message.author.avatarURL
           },
           fields: []
@@ -48,7 +47,7 @@ module.exports = {
   category: 'Logging'
 }
 
-function cleanArray (events) {
+function cleanArray(events) {
   const tempEvents = []
   events.forEach(event => {
     if (eventList.includes(event)) {

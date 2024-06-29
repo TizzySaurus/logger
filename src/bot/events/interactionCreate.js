@@ -1,12 +1,11 @@
-const fs = require('fs')
-const path = require('path')
-const Eris = require('eris')
-const { EMBED_COLORS } = require('../utils/constants')
+const { readdirSync } = require('fs')
+const { resolve } = require('path')
+const { EMBED_COLORS, displayUser } = require('../utils/constants')
 const { getEmbedFooter, getAuthorField } = require('../utils/embeds')
-const { NewsThreadChannel, PrivateThreadChannel, PublicThreadChannel } = require('eris')
+const { NewsThreadChannel, PrivateThreadChannel, PublicThreadChannel, ComponentInteraction, Constants, CommandInteraction, VoiceChannel } = require('eris')
 
-let slashCommands = fs.readdirSync(path.resolve('src', 'bot', 'slashcommands')).map(filename => {
-  return require(path.resolve('src', 'bot', 'slashcommands', filename))
+let slashCommands = readdirSync(resolve('src', 'bot', 'slashcommands')).map(filename => {
+  return require(resolve('src', 'bot', 'slashcommands', filename))
 })
 
 const waitingCustomIDs = new Map()
@@ -16,11 +15,11 @@ module.exports = {
   name: 'interactionCreate',
   type: 'on',
   handle (interaction) {
-    return new Promise((resolve, reject) => { // why use a promise? awaitCustomID and handle are still sync and can share the timeout/callback maps nicely?
+    return new Promise((resolve) => { // why use a promise? awaitCustomID and handle are still sync and can share the timeout/callback maps nicely?
       if (interaction.applicationID !== global.bot.user.id) {
         resolve()
       }
-      if (interaction instanceof Eris.ComponentInteraction) {
+      if (interaction instanceof ComponentInteraction) {
         if (interaction.data.custom_id && waitingCustomIDs.has(interaction.data.custom_id)) {
           if (interaction.member.user.id === waitingCustomIDs.get(interaction.data.custom_id).userID) {
             interaction.acknowledge().catch(() => {}).then(() => {
@@ -29,17 +28,17 @@ module.exports = {
             })
           }
         }
-      } else if (interaction instanceof Eris.CommandInteraction) {
+      } else if (interaction instanceof CommandInteraction) {
         const channel = global.bot.getChannel(interaction.channel.id)
-        if (!channel || channel instanceof Eris.VoiceChannel) return // no need to check send messages because replies are made using webhooks
+        if (!channel || channel instanceof VoiceChannel) return // no need to check send messages because replies are made using webhooks
         if (interaction.data.name === 'reloadinteractions' && process.env.CREATOR_IDS.split(",").includes(interaction.member.user.id)) {
-          fs.readdirSync(path.resolve('src', 'bot', 'slashcommands')).forEach(filename => {
-            delete require.cache[require.resolve(path.resolve('src', 'bot', 'slashcommands', filename))]
+          readdirSync(resolve('src', 'bot', 'slashcommands')).forEach(filename => {
+            delete require.cache[require.resolve(resolve('src', 'bot', 'slashcommands', filename))]
           })
-          slashCommands = fs.readdirSync(path.resolve('src', 'bot', 'slashcommands')).map(filename => {
-            return require(path.resolve('src', 'bot', 'slashcommands', filename))
+          slashCommands = readdirSync(resolve('src', 'bot', 'slashcommands')).map(filename => {
+            return require(resolve('src', 'bot', 'slashcommands', filename))
           })
-          interaction.createMessage({ content: '🆗 reloaded slash commands', flags: Eris.Constants.MessageFlags.EPHEMERAL }).catch(() => {})
+          interaction.createMessage({ content: '🆗 reloaded slash commands', flags: Constants.MessageFlags.EPHEMERAL }).catch(() => {})
           resolve()
         }
         const command = slashCommands.find(c => c.name === interaction.data.name)
@@ -59,7 +58,7 @@ module.exports = {
                   url: interaction.member.user.dynamicAvatarURL(null, 64)
                 }
               }],
-              flags: Eris.Constants.MessageFlags.EPHEMERAL
+              flags: Constants.MessageFlags.EPHEMERAL
             }).catch(() => {})
             return
           }
@@ -78,7 +77,7 @@ module.exports = {
                     url: interaction.member.user.dynamicAvatarURL(null, 64)
                   }
                 }],
-                flags: Eris.Constants.MessageFlags.EPHEMERAL
+                flags: Constants.MessageFlags.EPHEMERAL
               }).catch(() => {})
               return
             }
@@ -98,14 +97,14 @@ module.exports = {
                     url: global.bot.user.dynamicAvatarURL(null, 64)
                   }
                 }],
-                flags: Eris.Constants.MessageFlags.EPHEMERAL
+                flags: Constants.MessageFlags.EPHEMERAL
               }).catch(() => {})
               return
             }
           }
           const guild = global.bot.guilds.get(interaction.guildID)
           if (guild) {
-            global.logger.info(`${interaction.member.username}${interaction.member.discriminator === '0' ? '' : `#${interaction.member.discriminator}`} (${interaction.member.id}) in ${interaction.channel.id} sent /${command.name}. The guild is called "${guild.name}", owned by ${guild.ownerID} and has ${guild.memberCount} members.`)
+            global.logger.info(`${displayUser(interaction.member)} (${interaction.member.id}) in ${interaction.channel.id} sent /${command.name}. The guild is called "${guild.name}", owned by ${guild.ownerID} and has ${guild.memberCount} members.`)
             try {
               command.func(interaction)
             } catch (commandError) {

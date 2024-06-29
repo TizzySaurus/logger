@@ -1,40 +1,14 @@
 const { setEventsLogId } = require('../../db/interfaces/postgres/update')
 const guildWebhookCacher = require('../modules/guildWebhookCacher')
+const { ALL_EVENTS: eventList } = require("../utils/constants")
 const cacheGuild = require('../utils/cacheGuild')
-
-const eventList = [
-  'channelCreate',
-  'channelUpdate',
-  'channelDelete',
-  'guildBanAdd',
-  'guildBanRemove',
-  'guildRoleCreate',
-  'guildRoleDelete',
-  'guildRoleUpdate',
-  'guildUpdate',
-  'messageDelete',
-  'messageDeleteBulk',
-  'messageUpdate',
-  'guildMemberAdd',
-  'guildMemberKick',
-  'guildMemberRemove',
-  'guildMemberUpdate',
-  'voiceChannelLeave',
-  'voiceChannelJoin',
-  'voiceStateUpdate',
-  'voiceChannelSwitch',
-  'guildMemberNickUpdate',
-  'guildMemberVerify',
-  'guildEmojisUpdate',
-  'guildMemberBoostUpdate'
-]
 
 module.exports = {
   func: async (message, suffix) => {
     const botPerms = message.channel.permissionsOf(global.bot.user.id).json
     if (!botPerms.manageWebhooks || !botPerms.viewAuditLogs) {
-      message.channel.createMessage('I need manage webhooks and view audit logs permissions to run setchannel! This is necessary for me to send messages to your configured logging channel.').catch(_ => {})
-      message.addReaction('❌').catch(_ => {})
+      message.channel.createMessage('I need manage webhooks and view audit logs permissions to run setchannel! This is necessary for me to send messages to your configured logging channel.').catch(() => {})
+      message.addReaction('❌').catch(() => {})
       return
     }
     let events = suffix.split(', ')

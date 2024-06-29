@@ -26,6 +26,8 @@ module.exports = {
           color: EMBED_COLORS.GREEN
         }]
       })
-    } catch (_) {}
+    } catch (_) {
+      return
+    }
   }
 }

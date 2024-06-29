@@ -1,63 +1,10 @@
 const pool = require('../../clients/postgres')
-const escape = require('markdown-escape')
-const getDoc = require('./read').getGuild
-const getMessageById = require('./read').getMessageById
+const { getGuild } = require('./read')
 const cacheGuild = require('../../../bot/utils/cacheGuild')
-const getMessageFromBatch = require('../../messageBatcher').getMessage
-const updateBatchMessage = require('../../messageBatcher').updateMessage
+const { eventLogs } = require("../../../bot/utils/constants")
+const { getMessage } = require('../../messageBatcher')
+const { updateMessage } = require('../../messageBatcher')
 const aes = require('../../aes')
-
-const eventList = [
-  'channelCreate',
-  'channelUpdate',
-  'channelDelete',
-  'guildBanAdd',
-  'guildBanRemove',
-  'guildRoleCreate',
-  'guildRoleDelete',
-  'guildRoleUpdate',
-  'guildUpdate',
-  'messageDelete',
-  'messageDeleteBulk',
-  'messageUpdate',
-  'guildMemberAdd',
-  'guildMemberKick',
-  'guildMemberRemove',
-  'guildMemberUpdate',
-  'voiceChannelLeave',
-  'voiceChannelJoin',
-  'voiceStateUpdate',
-  'voiceChannelSwitch',
-  'guildEmojisUpdate',
-  'guildMemberNickUpdate'
-]
-
-const eventLogs = {
-  channelCreate: '',
-  channelUpdate: '',
-  channelDelete: '',
-  guildBanAdd: '',
-  guildBanRemove: '',
-  guildRoleCreate: '',
-  guildRoleDelete: '',
-  guildRoleUpdate: '',
-  guildUpdate: '',
-  messageDelete: '',
-  messageDeleteBulk: '',
-  messageUpdate: '',
-  guildMemberAdd: '',
-  guildMemberKick: '',
-  guildMemberRemove: '',
-  guildMemberUpdate: '',
-  voiceChannelLeave: '',
-  voiceChannelJoin: '',
-  voiceStateUpdate: '',
-  voiceChannelSwitch: '',
-  guildEmojisUpdate: '',
-  guildMemberNickUpdate: '',
-  guildMemberBoostUpdate: '',
-  guildMemberVerify: '' // I am a moron for having an object representing
-} // default event settings in multiple places instead of in constants.js
 
 async function clearEventLog (guildID) {
   await cacheGuild(guildID)
@@ -65,7 +12,7 @@ async function clearEventLog (guildID) {
 }
 
 async function clearEventByID (guildID, channelID) {
-  const doc = await getDoc(guildID)
+  const doc = await getGuild(guildID)
   const eventLogs = doc.event_logs
   Object.keys(eventLogs).forEach(event => {
     if (eventLogs[event] === channelID) {
@@ -77,7 +24,7 @@ async function clearEventByID (guildID, channelID) {
 }
 
 async function setAllEventsOneId (guildID, channelID) {
-  const doc = await getDoc(guildID)
+  const doc = await getGuild(guildID)
   const eventLogs = doc.event_logs
   Object.keys(eventLogs).forEach(event => {
     eventLogs[event] = channelID
@@ -87,7 +34,7 @@ async function setAllEventsOneId (guildID, channelID) {
 }
 
 async function setEventsLogId (guildID, channelID, events) {
-  const doc = await getDoc(guildID)
+  const doc = await getGuild(guildID)
   events.forEach(event => {
     doc.event_logs[event] = channelID
   })
@@ -95,15 +42,8 @@ async function setEventsLogId (guildID, channelID, events) {
   await cacheGuild(guildID)
 }
 
-// async function setEventsRawLogs (guildID, channelID, events) {
-//   const doc = await getDoc(guildID)
-//   doc.event_logs = { ...doc.event_logs, ...events }
-//   await pool.query('UPDATE guilds SET event_logs=$1 WHERE id=$2', [doc.event_logs, guildID])
-//   await cacheGuild(guildID)
-// }
-
 async function disableEvent (guildID, event) {
-  const doc = await getDoc(guildID)
+  const doc = await getGuild(guildID)
   let disabled = true
   if (doc.disabled_events.includes(event)) {
     doc.disabled_events.splice(doc.disabled_events.indexOf(event), 1)
@@ -118,7 +58,7 @@ async function disableEvent (guildID, event) {
 }
 
 async function ignoreChannel (guildID, channelID) {
-  const doc = await getDoc(guildID)
+  const doc = await getGuild(guildID)
   let disabled = true
   if (doc.ignored_channels.includes(channelID)) {
     const index = doc.ignored_channels.indexOf(channelID)
@@ -138,14 +78,14 @@ async function clearIgnoredChannels (guildID) {
 }
 
 async function toggleLogBots (guildID) {
-  const doc = await getDoc(guildID)
+  const doc = await getGuild(guildID)
   await pool.query('UPDATE guilds SET log_bots=$1 WHERE id=$2', [!doc.log_bots, guildID])
   global.bot.guildSettingsCache[guildID].logBots = !doc.log_bots
   return !doc.log_bots
 }
 
 async function updateMessageByID (id, changedAttrs) {
-  const batchMessage = getMessageFromBatch(id)
+  const batchMessage = getMessage(id)
   if (!batchMessage) {
     if ('imageUrls' in changedAttrs) {
       const newAttachmentB64 = changedAttrs.imageUrls.map(url => aes.encrypt(Buffer.from(url).toString("base64url"))).join("|")
@@ -164,7 +104,7 @@ async function updateMessageByID (id, changedAttrs) {
       global.webhook.warn(msg);
     }
   } else {
-    updateBatchMessage(id, changedAttrs)
+    updateMessage(id, changedAttrs)
   }
 }
 
@@ -176,5 +116,4 @@ exports.clearEventByID = clearEventByID
 exports.setAllEventsOneId = setAllEventsOneId
 exports.setEventsLogId = setEventsLogId
 exports.clearIgnoredChannels = clearIgnoredChannels
-// exports.setEventsRawLogs = setEventsRawLogs
 exports.updateMessageByID = updateMessageByID

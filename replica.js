@@ -1,5 +1,5 @@
 const cluster = require('cluster')
-const path = require('path')
+const { resolve } = require('path')
 
 async function assignWorkerInfo (info) {
   if (info.type !== 'startup') {
@@ -9,7 +9,7 @@ async function assignWorkerInfo (info) {
 
   if (info.processType === 'bot') {
     Object.assign(cluster.worker, info)
-    require(path.resolve('src', 'bot', 'index'))
+    require(resolve('src', 'bot', 'index'))
   }
 }
 

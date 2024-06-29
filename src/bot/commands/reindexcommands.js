@@ -1,7 +1,7 @@
 const commandIndexer = require('../../miscellaneous/commandIndexer')
 
 module.exports = {
-  func: async function (message, suffix) {
+  func: async function (message) {
     try {
       global.bot.commands = {}
       commandIndexer()

@@ -1,14 +1,6 @@
-const { Permission } = require('eris')
 const send = require('../modules/webhooksender')
 const escape = require('markdown-escape')
-const CHANNEL_TYPE_MAP = {
-  0: 'Text channel',
-  2: 'Voice channel',
-  4: 'Category channel',
-  5: 'Announcement channel',
-  13: 'Stage channel',
-  15: 'Forum channel'
-}
+const { displayUser, CHANNEL_TYPE_MAP } = require('../utils/constants')
 
 const canUseExternal = guild => {
   const logChannelID = global.bot.guildSettingsCache[guild.id].event_logs.channelUpdate
@@ -36,7 +28,7 @@ module.exports = {
           icon_url: 'https://logger.bot/staticfiles/red-x.png'
         },
         color: 0x03d3fc,
-        description: `${CHANNEL_TYPE_MAP[channel.type] ? CHANNEL_TYPE_MAP[channel.type] : 'unsupported channel'} <#${channel.id}> was updated (${escape(channel.name)})`,
+        description: `${CHANNEL_TYPE_MAP[channel.type] || 'unsupported channel'} <#${channel.id}> was updated (${escape(channel.name)})`,
         fields: [{
           name: 'Creation date',
           value: `<t:${Math.round(((channel.id / 4194304) + 1420070400000) / 1000)}:F>`,
@@ -202,7 +194,7 @@ module.exports = {
     }
 
     if (log && user) {
-      channelUpdateEvent.embeds[0].author.name = `${user.username}${user.discriminator === '0' ? '' : `#${user.discriminator}`}`
+      channelUpdateEvent.embeds[0].author.name = `${displayUser(user)}`
       channelUpdateEvent.embeds[0].author.icon_url = user.avatarURL
       if (channel.type === 13) {
         channelUpdateEvent.embeds[0].description = `Stage Channel **${channel.name}** was ${channel.topic === null ? 'closed' : 'opened'}`
@@ -220,7 +212,7 @@ module.exports = {
 }
 
 function toTitleCase (str) {
-  return str.replace(/_/g, ' ').replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
+  return str.replace(/_/g, ' ').replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase() })
 }
 
 function getDifference (array1, array2) {

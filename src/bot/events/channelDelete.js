@@ -1,13 +1,5 @@
 const send = require('../modules/webhooksender')
-const CHANNEL_TYPE_MAP = {
-  0: 'Text channel',
-  2: 'Voice channel',
-  4: 'Category',
-  5: 'Announcement',
-  13: 'Stage Channel',
-  15: 'Forum channel'
-}
-
+const { displayUser, CHANNEL_TYPE_MAP } = require('../utils/constants')
 module.exports = {
   name: 'channelDelete',
   type: 'on',
@@ -21,7 +13,7 @@ module.exports = {
           name: 'Unknown User',
           icon_url: 'https://logger.bot/staticfiles/red-x.png'
         },
-        description: `${CHANNEL_TYPE_MAP[channel.type] ? CHANNEL_TYPE_MAP[channel.type] : 'Unsupported channel type'} deleted (${channel.name})`,
+        description: `${CHANNEL_TYPE_MAP[channel.type] || 'Unsupported channel type'} deleted (${channel.name})`,
         fields: [{
           name: 'Name',
           value: channel.name
@@ -45,7 +37,7 @@ module.exports = {
       const user = global.bot.users.get(lastCachedMessage.userID)
       channelDeleteEvent.embeds[0].fields.push({
         name: 'Last message',
-        value: `Author: **${user.username}${user.discriminator === '0' ? '' : `#${user.discriminator}`}**\n${lastCachedMessage.content}`
+        value: `Author: **${displayUser(user)}**\n${lastCachedMessage.content}`
       })
     }
     if (channel.permissionOverwrites.size !== 0) {
@@ -68,7 +60,7 @@ module.exports = {
       if (user && user?.bot && !global.bot.guildSettingsCache[channel.guild.id].isLogBots()) return
       if (user) {
         const member = channel.guild.members.get(user.id)
-        channelDeleteEvent.embeds[0].author.name = `${user.username}${user.discriminator === '0' ? '' : `#${user.discriminator}`} ${member && member.nick ? `(${member.nick})` : ''}`
+        channelDeleteEvent.embeds[0].author.name = `${displayUser(user)} ${member && member.nick ? `(${member.nick})` : ''}`
         channelDeleteEvent.embeds[0].author.icon_url = user.avatarURL
         channelDeleteEvent.embeds[0].fields[3].value = `\`\`\`ini\nUser = ${user.id}\nChannel = ${channel.id}\`\`\``
       }

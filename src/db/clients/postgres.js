@@ -1,4 +1,4 @@
-const { Client, Pool } = require('pg') // PREREQUISITE: Have postgres installed and your user can connect
+const { Pool } = require('pg') // PREREQUISITE: Have postgres installed and your user can connect
 
 require('dotenv').config()
 const pool = new Pool({

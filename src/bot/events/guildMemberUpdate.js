@@ -2,6 +2,7 @@ const send = require('../modules/webhooksender')
 const cacheGuild = require('../utils/cacheGuild')
 const arrayCompare = require('../utils/arraycompare')
 const markdownEscape = require('markdown-escape')
+const { displayUser } = require('../utils/constants')
 
 const canUseExternal = guild => {
   const logChannelID = global.bot.guildSettingsCache[guild.id].event_logs.guildMemberUpdate
@@ -25,10 +26,10 @@ module.exports = {
       eventName: 'guildMemberUpdate',
       embeds: [{
         author: {
-          name: `${member.username}${member.discriminator === '0' ? '' : `#${member.discriminator}`}`,
+          name: `${displayUser(member)}`,
           icon_url: member.avatarURL
         },
-        description: `${member.username}${member.discriminator === '0' ? '' : `#${member.discriminator}`} ${member.mention} ${member.nick ? `(${member.nick})` : ''} was updated`,
+        description: `${displayUser(member)} ${member.mention} ${member.nick ? `(${member.nick})` : ''} was updated`,
         fields: [{
           name: 'Changes',
           value: 'Unknown. Look at the footer to see who updated the affected user.'
@@ -59,9 +60,9 @@ module.exports = {
       await send(guildMemberUpdate)
     } else if (oldMember?.pending && !member.pending && guild.features.includes('MEMBER_VERIFICATION_GATE_ENABLED')) {
       guildMemberUpdate.eventName = 'guildMemberVerify'
-      guildMemberUpdate.embeds[0].description = `${member.mention} (${member.username}${member.discriminator === '0' ? '' : `#${member.discriminator}`}: \`${member.id}\`) has verified.`
+      guildMemberUpdate.embeds[0].description = `${member.mention} (${displayUser(member)}: \`${member.id}\`) has verified.`
       guildMemberUpdate.embeds[0].author = {
-        name: `${member.username}${member.discriminator === '0' ? '' : `#${member.discriminator}`}`,
+        name: `${displayUser(member)}`,
         icon_url: member.avatarURL
       }
       guildMemberUpdate.embeds[0].color = 0x1ced9a
@@ -77,7 +78,7 @@ module.exports = {
       embedCopy.eventName = 'guildMemberBoostUpdate'
       embedCopy.embeds[0].description = `${member.mention} has ${newMemberHasBoostRole ? 'boosted' : 'stopped boosting'} the server.`
       embedCopy.embeds[0].author = {
-        name: `${member.username}${member.discriminator === '0' ? '' : `#${member.discriminator}`}`,
+        name: `${displayUser(member)}`,
         icon_url: member.avatarURL
       }
       embedCopy.embeds[0].color = member.premiumSince ? 0x15cc12 : 0xeb4034
@@ -120,7 +121,7 @@ module.exports = {
       }
       guildMemberUpdate.embeds[0].color = roleColor
       guildMemberUpdate.embeds[0].footer = {
-        text: `${user.username}${user.discriminator === '0' ? '' : `#${user.discriminator}`}`,
+        text: `${displayUser(user)}`,
         icon_url: user.avatarURL
       }
       guildMemberUpdate.embeds[0].fields.push({
@@ -130,19 +131,19 @@ module.exports = {
       if (!guildMemberUpdate.embeds[0].fields[0].value) return
       await send(guildMemberUpdate)
     } else if (possibleTimeoutLog) {
-      guildMemberUpdate.embeds[0].description = `${member.username}${member.discriminator === '0' ? '' : `#${member.discriminator}`} (${member.mention}) ${member.communicationDisabledUntil ? 'was timed out' : 'had their timeout removed'}`
+      guildMemberUpdate.embeds[0].description = `${displayUser(member)} (${member.mention}) ${member.communicationDisabledUntil ? 'was timed out' : 'had their timeout removed'}`
       guildMemberUpdate.embeds[0].author = {
-        name: `${member.username}${member.discriminator === '0' ? '' : `#${member.discriminator}`}`,
+        name: `${displayUser(member)}`,
         icon_url: member.avatarURL
       }
       guildMemberUpdate.embeds[0].footer = {
-        text: `${possibleTimeoutLog.user.username}${possibleTimeoutLog.user.discriminator === '0' ? '' : `#${possibleTimeoutLog.user.discriminator}`}`,
+        text: displayUser(possibleTimeoutLog.user),
         icon_url: possibleTimeoutLog.user.avatarURL
       }
       guildMemberUpdate.embeds[0].fields = []
       guildMemberUpdate.embeds[0].fields.push({
         name: 'Timeout Creator',
-        value: `${possibleTimeoutLog.user.username}${possibleTimeoutLog.user.discriminator === '0' ? '' : `#${possibleTimeoutLog.user.discriminator}`}`
+        value: displayUser(possibleTimeoutLog.user)
       })
       if (possibleTimeoutLog.reason) {
         guildMemberUpdate.embeds[0].fields.push({
