@@ -20,7 +20,7 @@ module.exports = {
     }
     if (!oldMessage) return
     if (newMessage.author.bot && !global.bot.global.guildSettingsCache[newMessage.channel.guild.id].isLogBots()) return
-    # NB: Messages are stored with markdown escaped, so when comparing content we need to escape the new content
+    // NB: Messages are stored with markdown escaped, so when comparing content we need to escape the new content
     if ((escape(newMessage.content) === oldMessage.content) && (newMessage.attachments.length === oldMessage.attachment_b64.split("|").filter(Boolean).length)) return // content/attachments didn't change so don't process
     await processMessage(newMessage, oldMessage)
 
