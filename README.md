@@ -1,8 +1,8 @@
-<center><img src="https://cdn.discordapp.com/attachments/349356606883889152/616414555639382016/Logger.png" />
-<a href="https://discordbots.org/bot/298822483060981760" >
-  <img src="https://discordbots.org/api/widget/298822483060981760.svg" alt="Logger" />
-</a>
-</center>
+# Logger
+
+![Logger](https://cdn.discordapp.com/attachments/349356606883889152/616414555639382016/Logger.png)
+
+[![Logger](https://discordbots.org/api/widget/298822483060981760.svg)](https://discordbots.org/bot/298822483060981760)
 
 ## Logger's official instance closed 04/05/2024, but can still be selfhosted and modified by users
 
