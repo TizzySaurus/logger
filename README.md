@@ -13,33 +13,13 @@ Logger is a powerful [Discord](https://discordapp.com) bot meant to give staff m
 This route uses Docker and a docker-compose file to bring up the required dependencies for Logger.
 
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) if on Windows, and [regular Docker on Linux systems](https://docs.docker.com/engine/install/ubuntu/)
-2. Download the bot code via `git clone https://github.com/curtisf/logger` or clicking "<> Code -> Download Zip" on the GitHub page
+2. Download the bot code via `git clone` or clicking "<> Code -> Download Zip" on the GitHub page
 3. In the bot code folder, copy/rename .env.example into .env
-4. Fill out **all** values in your .env file
+4. Fill out the values in your .env file
 5. Run `docker compose up` to start the bot and dependent services. This will make two folders in the same folder that the command is ran in: pgdata and redisdata, used for storing database information. If you want to change the location that postgres and redis data is stored, check out the volume mounts in `docker-compose.yml`.
-6. The bot should be up and running in Discord if all values are present. The database tables will be initialized upon the bot starting, or you can initialize them using `node src/miscellaneous/generateDB.js`.
-7. If you have issues, check the logs for `docker compose up`. Otherwise, you're done, and can use `docker compose up -d` to run the bot in the background 24/7
-8. To setup slash commands, use:
-
-Set global commands:
-
-```bash
-node src/miscellaneous/setslashcmds.js
-```
-
-Set commands in one server:
-
-```bash
-node src/miscellaneous/setslashcmds.js --scope guild --guild-id "paste your server id"
-```
-
-To view script help information:
-
-```bash
-node src/miscellaneous/setslashcmds.js --help
-```
-
-9. Alternatively to using the setslashcmds script, you can use your chosen GLOBAL_BOT_PREFIX to set the bot's commands. If yours is %, then you'd do `%setcmd global` to globally set commands, and `%setcmd guild` to quickly set server-specific slash commands.
+6. Run `docker compose exec loggerbot npm run genDB` to initialize the database tables.
+7. The bot should be up and running in Discord if all necessary values are present.
+8. If you have issues, check the logs for `docker compose up`. Otherwise, you're done, and can use `docker compose up -d` to run the bot in the background 24/7
 
 ### Making changes with Docker
 
